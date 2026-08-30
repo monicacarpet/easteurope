@@ -436,3 +436,93 @@ thead .MuiTableCell-root {
   height: 28px;
   flex: 0 0 28px;
 }
+
+/* === CALO layout geometry fix: desktop spacing / margins === */
+@media (min-width: 1200px) {
+  :root {
+    --calo-sidebar-width: 280px;
+    --calo-main-gap: 24px;
+  }
+
+  html,
+  body,
+  #root {
+    overflow-x: hidden !important;
+  }
+
+  .MuiDrawer-paper {
+    width: var(--calo-sidebar-width) !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 1200 !important;
+  }
+
+  .MuiAppBar-root {
+    width: calc(100% - var(--calo-sidebar-width)) !important;
+    max-width: calc(100% - var(--calo-sidebar-width)) !important;
+    margin-left: var(--calo-sidebar-width) !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 1100 !important;
+  }
+
+  main,
+  [role="main"] {
+    margin-left: var(--calo-sidebar-width) !important;
+    width: calc(100% - var(--calo-sidebar-width)) !important;
+    max-width: calc(100% - var(--calo-sidebar-width)) !important;
+    min-height: 100vh !important;
+    padding: calc(var(--calo-header-height) + var(--calo-main-gap)) var(--calo-main-gap) var(--calo-main-gap) var(--calo-main-gap) !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  main .MuiContainer-root,
+  [role="main"] .MuiContainer-root,
+  main > .MuiBox-root,
+  [role="main"] > .MuiBox-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .MuiGrid-container {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .MuiCard-root,
+  .MuiPaper-root {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* === tablet / mobile: no permanent desktop offset === */
+@media (max-width: 1199.95px) {
+  .MuiAppBar-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    left: 0 !important;
+  }
+
+  main,
+  [role="main"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding: 88px 16px 16px 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .MuiDrawer-paper {
+    width: 280px !important;
+  }
+}
