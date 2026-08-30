@@ -1,20 +1,20 @@
 {
-  "short_name": "Sales Intelligence",
-  "name": "Client Sales Intelligence",
-  "icons": [
-    {
-      "src": "favicon.png",
-      "sizes": "64x64",
-      "type": "image/png"
-    },
-    {
-      "src": "apple-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#11183A",
-  "background_color": "#ffffff"
+    "short_name":  "CALO",
+    "name":  "CALO",
+    "icons":  [
+                  {
+                      "src":  "favicon.png",
+                      "sizes":  "64x64",
+                      "type":  "image/png"
+                  },
+                  {
+                      "src":  "apple-icon.png",
+                      "sizes":  "180x180",
+                      "type":  "image/png"
+                  }
+              ],
+    "start_url":  ".",
+    "display":  "standalone",
+    "theme_color":  "#11183A",
+    "background_color":  "#ffffff"
 }

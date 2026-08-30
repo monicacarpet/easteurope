@@ -1,0 +1,438 @@
+/*
+  CALO Mantis-inspired skin
+  Scope: presentation only. No API, Supabase, routing, page logic, tables,
+  calculations, filters, stock/lead components, or permissions are changed.
+*/
+
+:root {
+  --calo-primary: #1677ff;
+  --calo-primary-soft: #e6f4ff;
+  --calo-primary-hover: #0958d9;
+  --calo-purple: #55439a;
+  --calo-lime: #b7ef42;
+
+  --calo-bg: #fafafb;
+  --calo-paper: #ffffff;
+  --calo-border: #e6ebf1;
+  --calo-border-strong: #d9d9d9;
+  --calo-text: #262626;
+  --calo-text-secondary: #8c8c8c;
+  --calo-muted: #595959;
+
+  --calo-sidebar-width: 260px;
+  --calo-radius: 8px;
+  --calo-header-height: 64px;
+}
+
+/* ---------- Global canvas ---------- */
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: var(--calo-bg) !important;
+}
+
+body {
+  margin: 0;
+  color: var(--calo-text) !important;
+  font-family: "Public Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+    sans-serif !important;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Remove Material Dashboard gradient language globally without touching charts/data. */
+.MuiPaper-root,
+.MuiCard-root,
+.MuiAppBar-root,
+.MuiDrawer-paper,
+.MuiButton-root,
+.MuiChip-root,
+.MuiAlert-root {
+  background-image: none !important;
+}
+
+/* ---------- Sidebar / navigation shell ---------- */
+
+.MuiDrawer-paper {
+  width: var(--calo-sidebar-width) !important;
+  background: var(--calo-paper) !important;
+  color: var(--calo-text) !important;
+  border-right: 1px solid var(--calo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Kill the old dark/gradient blocks used inside the Material Dashboard sidenav. */
+.MuiDrawer-paper li > div,
+.MuiDrawer-paper a > div {
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.MuiDrawer-paper a {
+  color: var(--calo-muted) !important;
+  text-decoration: none !important;
+}
+
+.MuiDrawer-paper a > div {
+  border-radius: 4px !important;
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  min-height: 40px !important;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease !important;
+}
+
+/* React Router NavLink active state. */
+.MuiDrawer-paper a[aria-current="page"],
+.MuiDrawer-paper a[aria-current="page"] * {
+  color: var(--calo-primary) !important;
+}
+
+.MuiDrawer-paper a[aria-current="page"] > div {
+  background: var(--calo-primary-soft) !important;
+}
+
+.MuiDrawer-paper a:hover > div {
+  background: #f5f5f5 !important;
+}
+
+.MuiDrawer-paper a[aria-current="page"]:hover > div {
+  background: var(--calo-primary-soft) !important;
+}
+
+.MuiDrawer-paper .MuiIcon-root,
+.MuiDrawer-paper svg {
+  color: inherit !important;
+  filter: none !important;
+}
+
+/* Section labels */
+.MuiDrawer-paper .MuiTypography-caption,
+.MuiDrawer-paper [class*="MuiTypography-overline"] {
+  color: #8c8c8c !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ---------- Top header ---------- */
+
+.MuiAppBar-root {
+  min-height: var(--calo-header-height) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: var(--calo-text) !important;
+  border-bottom: 1px solid var(--calo-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.MuiAppBar-root .MuiToolbar-root {
+  min-height: var(--calo-header-height) !important;
+}
+
+/* Search / compact toolbar inputs */
+.MuiAppBar-root .MuiOutlinedInput-root {
+  background: #ffffff !important;
+}
+
+/* ---------- Main surface ---------- */
+
+main,
+[role="main"] {
+  background: var(--calo-bg) !important;
+}
+
+/* ---------- Cards ---------- */
+
+.MuiCard-root {
+  background: var(--calo-paper) !important;
+  border: 1px solid var(--calo-border) !important;
+  border-radius: var(--calo-radius) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.MuiCard-root:hover {
+  box-shadow: none !important;
+}
+
+.MuiCardHeader-root {
+  padding: 20px !important;
+  border-bottom: 1px solid var(--calo-border);
+}
+
+.MuiCardContent-root {
+  padding: 20px !important;
+}
+
+.MuiCardContent-root:last-child {
+  padding-bottom: 20px !important;
+}
+
+/* ---------- Typography ---------- */
+
+.MuiTypography-root {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.MuiTypography-h1,
+.MuiTypography-h2,
+.MuiTypography-h3,
+.MuiTypography-h4,
+.MuiTypography-h5,
+.MuiTypography-h6 {
+  color: var(--calo-text) !important;
+  letter-spacing: 0 !important;
+}
+
+.MuiTypography-h1 {
+  font-size: 2.375rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiTypography-h2 {
+  font-size: 1.875rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiTypography-h3 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiTypography-h4 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiTypography-h5 {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+
+.MuiTypography-h6 {
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+.MuiTypography-body1,
+.MuiTypography-button {
+  font-size: 0.875rem !important;
+}
+
+.MuiTypography-body2,
+.MuiTypography-caption {
+  font-size: 0.75rem !important;
+}
+
+/* ---------- Buttons ---------- */
+
+.MuiButton-root {
+  min-height: 36px;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.MuiButton-contained,
+.MuiButton-containedPrimary {
+  background: var(--calo-primary) !important;
+  color: #fff !important;
+}
+
+.MuiButton-contained:hover,
+.MuiButton-containedPrimary:hover {
+  background: var(--calo-primary-hover) !important;
+  box-shadow: none !important;
+}
+
+.MuiButton-outlined {
+  background: #fff !important;
+  border-color: var(--calo-border-strong) !important;
+  color: var(--calo-text) !important;
+}
+
+.MuiButton-outlined:hover {
+  background: #fafafa !important;
+  border-color: #bfbfbf !important;
+}
+
+/* ---------- Inputs ---------- */
+
+.MuiOutlinedInput-root,
+.MuiInputBase-root {
+  border-radius: 4px !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #d9d9d9 !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #bfbfbf !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-width: 1px !important;
+  border-color: var(--calo-primary) !important;
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: var(--calo-primary) !important;
+}
+
+/* ---------- Tables ---------- */
+
+.MuiTableContainer-root {
+  border-radius: var(--calo-radius) !important;
+  box-shadow: none !important;
+}
+
+.MuiTableCell-root {
+  border-bottom: 1px solid #f0f0f0 !important;
+  color: var(--calo-text) !important;
+  font-size: 13px !important;
+}
+
+.MuiTableHead-root .MuiTableCell-root,
+thead .MuiTableCell-root {
+  background: #fafafa !important;
+  color: #595959 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.MuiTableRow-root:hover {
+  background: #fafafa !important;
+}
+
+/* ---------- Dialogs, menus, popovers ---------- */
+
+.MuiDialog-paper,
+.MuiPopover-paper,
+.MuiMenu-paper {
+  border: 1px solid var(--calo-border) !important;
+  border-radius: var(--calo-radius) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.MuiDialogTitle-root {
+  border-bottom: 1px solid var(--calo-border);
+}
+
+.MuiDialogActions-root {
+  border-top: 1px solid var(--calo-border);
+}
+
+/* ---------- Alerts / chips ---------- */
+
+.MuiAlert-root {
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.MuiChip-root {
+  border-radius: 4px !important;
+}
+
+/* ---------- Pagination / tabs ---------- */
+
+.MuiTabs-indicator {
+  background: var(--calo-primary) !important;
+}
+
+.MuiTab-root.Mui-selected {
+  color: var(--calo-primary) !important;
+}
+
+.MuiPaginationItem-root {
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Progress ---------- */
+
+.MuiLinearProgress-root {
+  border-radius: 4px !important;
+}
+
+/* ---------- Remove old floating / glassy dashboard chrome ---------- */
+
+.MuiAppBar-root[style*="backdrop-filter"],
+.MuiPaper-root[style*="backdrop-filter"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1199.95px) {
+  .MuiDrawer-paper {
+    width: var(--calo-sidebar-width) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .MuiCardContent-root {
+    padding: 16px !important;
+  }
+
+  .MuiCardHeader-root {
+    padding: 16px !important;
+  }
+}
+
+/* ---------- CALO brand helpers ---------- */
+
+.calo-brand-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--calo-purple);
+}
+
+.calo-brand-mark {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
