@@ -1,0 +1,34 @@
+name: Deploy Supabase Migrations
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply after the dry run
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production-database
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 2.116.0
+      - name: Link client-owned project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+      - name: Preview migrations
+        run: supabase db push --dry-run
+      - name: Apply migrations
+        if: inputs.apply == true
+        run: supabase db push

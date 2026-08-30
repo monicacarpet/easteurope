@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Client company placeholder logo</title>
+  <desc id="desc">Neutral blue sales intelligence mark to replace during client setup.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" rx="56" fill="url(#g)"/>
+  <path d="M54 166V92a14 14 0 0 1 14-14h28v88H54Zm45 0V54h42v112H99Zm45 0v-60h28a14 14 0 0 1 14 14v46h-42Z" fill="#fff" opacity=".95"/>
+  <path d="m62 68 38-23 38 15 37-29" fill="none" stroke="#7dd3fc" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
+</svg>

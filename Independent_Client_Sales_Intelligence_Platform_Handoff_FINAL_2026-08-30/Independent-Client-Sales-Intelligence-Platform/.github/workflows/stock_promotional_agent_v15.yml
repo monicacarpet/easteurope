@@ -1,0 +1,123 @@
+name: Ready-Stock Promotional Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_emails:
+        description: Maximum promotional emails or previews for this run
+        required: true
+        default: 15
+        type: number
+      force_local_window:
+        description: Ignore recipient local time for this manual run
+        required: true
+        default: false
+        type: boolean
+      preview_only:
+        description: Generate exact previews without sending
+        required: true
+        default: true
+        type: boolean
+      live_confirmation:
+        description: For live sending, type SEND_STOCK_EMAILS
+        required: true
+        default: PREVIEW
+        type: string
+  schedule:
+    - cron: "37 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: client-sales-email-sending
+  cancel-in-progress: false
+
+jobs:
+  send-stock-emails:
+    if: github.event_name == 'workflow_dispatch' || vars.AUTOMATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip && pip install -r requirements.lock.txt
+      - name: Offline safety tests
+        env:
+          MIN_GEMINI_INTERVAL_SECONDS: "0"
+        run: python scripts/test_stock_promotional_agent_v15.py
+      - name: Resolve guarded run settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            requested='${{ inputs.max_emails }}'
+            [[ "$requested" =~ ^[0-9]+$ ]] || requested=1
+            (( requested >= 1 )) || requested=1
+            (( requested <= 100 )) || requested=100
+            preview='${{ inputs.preview_only }}'
+            if [ "$preview" != "true" ] && [ '${{ inputs.live_confirmation }}' != 'SEND_STOCK_EMAILS' ]; then
+              echo 'Live confirmation is missing.' >&2
+              exit 1
+            fi
+            echo "MAX_EMAILS_PER_RUN=$requested" >> "$GITHUB_ENV"
+            echo "FORCE_LOCAL_WINDOW=${{ inputs.force_local_window }}" >> "$GITHUB_ENV"
+            echo "PREVIEW_ONLY=$preview" >> "$GITHUB_ENV"
+            echo "STOCK_LIVE_CONFIRMATION=${{ inputs.live_confirmation }}" >> "$GITHUB_ENV"
+            echo "REQUIRE_VERIFIED_SEND=true" >> "$GITHUB_ENV"
+          else
+            echo "MAX_EMAILS_PER_RUN=15" >> "$GITHUB_ENV"
+            echo "FORCE_LOCAL_WINDOW=false" >> "$GITHUB_ENV"
+            echo "PREVIEW_ONLY=false" >> "$GITHUB_ENV"
+            echo "STOCK_LIVE_CONFIRMATION=SEND_STOCK_EMAILS" >> "$GITHUB_ENV"
+            echo "REQUIRE_VERIFIED_SEND=false" >> "$GITHUB_ENV"
+          fi
+      - name: Sync inbound replies
+        if: env.PREVIEW_ONLY != 'true'
+        env:
+          MAIL_SYNC_EMAIL: ${{ secrets.STOCK_MAIL_EMAIL }}
+          MAIL_SYNC_SECURITY_PASSWORD: ${{ secrets.STOCK_MAIL_SECURITY_PASSWORD }}
+          MAIL_IMAP_HOST: ${{ vars.STOCK_IMAP_HOST }}
+          MAIL_IMAP_PORT: ${{ vars.STOCK_IMAP_PORT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python scripts/sync_inbound_replies.py
+      - name: Run stock agent
+        env:
+          PREVIEW_ONLY: ${{ env.PREVIEW_ONLY }}
+          FORCE_LOCAL_WINDOW: ${{ env.FORCE_LOCAL_WINDOW }}
+          STOCK_LIVE_CONFIRMATION: ${{ env.STOCK_LIVE_CONFIRMATION }}
+          MAX_EMAILS_PER_RUN: ${{ env.MAX_EMAILS_PER_RUN }}
+          REQUIRE_VERIFIED_SEND: ${{ env.REQUIRE_VERIFIED_SEND }}
+          STOCK_MAIL_EMAIL: ${{ secrets.STOCK_MAIL_EMAIL }}
+          STOCK_MAIL_SECURITY_PASSWORD: ${{ secrets.STOCK_MAIL_SECURITY_PASSWORD }}
+          STOCK_SMTP_HOST: ${{ vars.STOCK_SMTP_HOST }}
+          STOCK_SMTP_PORT: ${{ vars.STOCK_SMTP_PORT }}
+          STOCK_IMAP_HOST: ${{ vars.STOCK_IMAP_HOST }}
+          STOCK_IMAP_PORT: ${{ vars.STOCK_IMAP_PORT }}
+          STOCK_SENT_MAILBOX: ${{ vars.STOCK_SENT_MAILBOX }}
+          COMPANY_NAME: ${{ vars.COMPANY_NAME }}
+          COMPANY_WEBSITE: ${{ vars.COMPANY_WEBSITE }}
+          COMPANY_EMAIL_DOMAIN: ${{ vars.COMPANY_EMAIL_DOMAIN }}
+          STOCK_GEMINI_API_KEY: ${{ secrets.STOCK_GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          STOCK_GEMINI_MODEL: gemini-3.5-flash-lite
+          STOCK_GEMINI_FALLBACK_MODEL: gemini-3.5-flash
+          MIN_GEMINI_INTERVAL_SECONDS: "15"
+          STOCK_AUDIT_BCC_EMAIL: ${{ secrets.STOCK_AUDIT_BCC_EMAIL }}
+          STOCK_FX_TIMEOUT_SECONDS: "15"
+          DELAY_MIN_SECONDS: "20"
+          DELAY_MAX_SECONDS: "35"
+        run: python scripts/stock_promotional_agent_v15.py
+      - name: Upload stock outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: stock-email-output-${{ github.run_number }}
+          path: stock_email_output/
+          if-no-files-found: warn
+          retention-days: 14

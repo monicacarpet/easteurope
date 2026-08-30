@@ -1,0 +1,16 @@
+# Direct application dependencies. CI installs requirements.lock.txt.
+streamlit==1.62.0
+pandas==2.3.3
+supabase==2.31.0
+plotly==6.9.0
+pydeck==0.9.3
+pycountry==26.2.16
+h3==4.5.0
+Pillow==12.3.0
+requests==2.34.2
+beautifulsoup4==4.15.0
+google-genai==2.20.0
+pydantic==2.13.5
+timezonefinder==8.2.5
+dnspython==2.8.0
+pytest==8.4.2

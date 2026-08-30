@@ -1,0 +1,116 @@
+name: Lead Outreach Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_emails:
+        description: Maximum emails or previews for this run
+        required: true
+        default: 15
+        type: number
+      force_local_window:
+        description: Ignore recipient local time for this manual run
+        required: true
+        default: false
+        type: boolean
+      preview_only:
+        description: Generate previews without sending
+        required: true
+        default: true
+        type: boolean
+      live_confirmation:
+        description: For live sending, type SEND_OUTREACH_EMAILS
+        required: true
+        default: PREVIEW
+        type: string
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: client-sales-email-sending
+  cancel-in-progress: false
+
+jobs:
+  send-emails:
+    if: github.event_name == 'workflow_dispatch' || vars.AUTOMATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip && pip install -r requirements.lock.txt
+      - name: Offline safety tests
+        env:
+          MIN_GEMINI_INTERVAL_SECONDS: "0"
+        run: python scripts/test_email_agent.py
+      - name: Resolve guarded run settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            requested='${{ inputs.max_emails }}'
+            [[ "$requested" =~ ^[0-9]+$ ]] || requested=1
+            (( requested >= 1 )) || requested=1
+            (( requested <= 100 )) || requested=100
+            preview='${{ inputs.preview_only }}'
+            if [ "$preview" != "true" ] && [ '${{ inputs.live_confirmation }}' != 'SEND_OUTREACH_EMAILS' ]; then
+              echo 'Live confirmation is missing.' >&2
+              exit 1
+            fi
+            echo "MAX_EMAILS_PER_RUN=$requested" >> "$GITHUB_ENV"
+            echo "FORCE_LOCAL_WINDOW=${{ inputs.force_local_window }}" >> "$GITHUB_ENV"
+            echo "PREVIEW_ONLY=$preview" >> "$GITHUB_ENV"
+          else
+            echo "MAX_EMAILS_PER_RUN=15" >> "$GITHUB_ENV"
+            echo "FORCE_LOCAL_WINDOW=false" >> "$GITHUB_ENV"
+            echo "PREVIEW_ONLY=false" >> "$GITHUB_ENV"
+          fi
+      - name: Sync inbound replies
+        if: env.PREVIEW_ONLY != 'true'
+        env:
+          MAIL_SYNC_EMAIL: ${{ secrets.OUTREACH_MAIL_EMAIL }}
+          MAIL_SYNC_SECURITY_PASSWORD: ${{ secrets.OUTREACH_MAIL_PASSWORD }}
+          MAIL_IMAP_HOST: ${{ vars.OUTREACH_IMAP_HOST }}
+          MAIL_IMAP_PORT: ${{ vars.OUTREACH_IMAP_PORT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python scripts/sync_inbound_replies.py
+      - name: Run lead outreach agent
+        env:
+          MAX_EMAILS_PER_RUN: ${{ env.MAX_EMAILS_PER_RUN }}
+          FORCE_LOCAL_WINDOW: ${{ env.FORCE_LOCAL_WINDOW }}
+          PREVIEW_ONLY: ${{ env.PREVIEW_ONLY }}
+          OUTREACH_MAIL_EMAIL: ${{ secrets.OUTREACH_MAIL_EMAIL }}
+          OUTREACH_MAIL_PASSWORD: ${{ secrets.OUTREACH_MAIL_PASSWORD }}
+          OUTREACH_SMTP_HOST: ${{ vars.OUTREACH_SMTP_HOST }}
+          OUTREACH_SMTP_PORT: ${{ vars.OUTREACH_SMTP_PORT }}
+          OUTREACH_IMAP_HOST: ${{ vars.OUTREACH_IMAP_HOST }}
+          OUTREACH_IMAP_PORT: ${{ vars.OUTREACH_IMAP_PORT }}
+          OUTREACH_SENT_MAILBOX: ${{ vars.OUTREACH_SENT_MAILBOX }}
+          COMPANY_NAME: ${{ vars.COMPANY_NAME }}
+          COMPANY_WEBSITE: ${{ vars.COMPANY_WEBSITE }}
+          COMPANY_PROFILE: ${{ vars.COMPANY_PROFILE }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GEMINI_MODEL: gemini-3.5-flash-lite
+          GEMINI_RESEARCH_MODEL: gemini-3.5-flash-lite
+          GEMINI_FALLBACK_MODEL: gemini-3.5-flash
+          MIN_GEMINI_INTERVAL_SECONDS: "13"
+          DELAY_MIN_SECONDS: "25"
+          DELAY_MAX_SECONDS: "45"
+        run: python scripts/automated_email_agent.py
+      - name: Upload previews
+        if: always() && env.PREVIEW_ONLY == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: outreach-email-previews-${{ github.run_number }}
+          path: preview_output/
+          if-no-files-found: warn
+          retention-days: 7

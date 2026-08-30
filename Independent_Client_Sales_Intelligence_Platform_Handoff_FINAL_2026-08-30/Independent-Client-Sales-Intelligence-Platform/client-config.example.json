@@ -1,0 +1,37 @@
+{
+  "company_name": "REPLACE WITH LEGAL COMPANY NAME",
+  "app_name": "REPLACE WITH COMPANY Sales Intelligence",
+  "brand_short_name": "REPLACE WITH SHORT BRAND",
+  "company_website": "https://REPLACE.example",
+  "company_email_domain": "REPLACE.example",
+  "company_profile": "REPLACE with a verified, factual description of the company, product categories, capabilities, markets, and commercial constraints.",
+  "campaign_timezone": "UTC",
+  "business_utc_offset_hours": 0,
+  "daily_email_limit": 15,
+  "priority_countries": [],
+  "outreach": {
+    "sender_name": "REPLACE WITH VERIFIED SENDER NAME",
+    "sender_job_title": "International Sales",
+    "sender_email": "sales@REPLACE.example",
+    "sender_phone": "",
+    "smtp_host": "smtp.REPLACE.example",
+    "smtp_port": 465,
+    "imap_host": "imap.REPLACE.example",
+    "imap_port": 993,
+    "sent_mailbox": "Sent"
+  },
+  "stock": {
+    "sender_name": "REPLACE WITH VERIFIED SENDER NAME",
+    "sender_job_title": "Ready Stock Sales",
+    "sender_email": "stock@REPLACE.example",
+    "sender_phone": "",
+    "smtp_host": "smtp.REPLACE.example",
+    "smtp_port": 465,
+    "imap_host": "imap.REPLACE.example",
+    "imap_port": 993,
+    "sent_mailbox": "Sent"
+  },
+  "supabase_url": "https://REPLACE.supabase.co",
+  "supabase_publishable_key": "REPLACE WITH SUPABASE PUBLISHABLE KEY",
+  "cloudflare_project_name": "REPLACE-with-project-name"
+}

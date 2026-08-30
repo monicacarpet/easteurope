@@ -1,0 +1,87 @@
+{
+  "name": "client-sales-intelligence",
+  "version": "2.0.0",
+  "private": true,
+  "author": "Creative Tim",
+  "license": "See license in https://www.creative-tim.com/license",
+  "description": "White-label lead, GIS, stock and outbound campaign operations dashboard.",
+  "bugs": {
+    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
+  },
+  "dependencies": {
+    "@emotion/cache": "11.10.8",
+    "@emotion/react": "11.10.8",
+    "@emotion/styled": "11.10.8",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.3",
+    "chart.js": "4.3.0",
+    "chroma-js": "2.4.2",
+    "prop-types": "15.8.1",
+    "react": "18.2.0",
+    "react-chartjs-2": "5.2.0",
+    "react-dom": "18.2.0",
+    "react-github-btn": "1.4.0",
+    "react-router-dom": "7.18.3",
+    "react-scripts": "5.0.1",
+    "react-table": "7.8.0",
+    "stylis": "4.1.4",
+    "stylis-plugin-rtl": "2.1.1",
+    "yup": "1.1.1",
+    "@supabase/supabase-js": "2.57.4",
+    "maplibre-gl": "5.7.1",
+    "react-map-gl": "8.0.4",
+    "read-excel-file": "9.3.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "eslint": "8.39.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "prettier": "2.8.8"
+  },
+  "overrides": {
+    "@tootallnate/once": "2.0.1",
+    "postcss": "8.5.26",
+    "serialize-javascript": "7.1.1",
+    "svgo": "4.1.0",
+    "underscore": "1.13.8",
+    "uuid": "11.1.1"
+  },
+  "engines": {
+    "node": ">=22 <25",
+    "npm": ">=10"
+  }
+}

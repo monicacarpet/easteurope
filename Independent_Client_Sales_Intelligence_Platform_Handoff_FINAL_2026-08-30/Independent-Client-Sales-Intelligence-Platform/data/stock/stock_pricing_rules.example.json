@@ -1,0 +1,6 @@
+{
+  "price_source": "Replace with the client's approved commercial price document",
+  "price_effective_date": "YYYY-MM-DD",
+  "minimum_promotional_area_m2": 1,
+  "price_schedule_cny_per_m2": {}
+}
