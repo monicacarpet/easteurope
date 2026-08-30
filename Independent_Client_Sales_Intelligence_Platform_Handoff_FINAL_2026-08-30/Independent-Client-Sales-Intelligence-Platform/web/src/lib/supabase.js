@@ -19,4 +19,3 @@ export const supabase = demoMode
         detectSessionInUrl: true,
       },
     });
-
