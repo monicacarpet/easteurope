@@ -229,7 +229,7 @@ function DataQuality() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={2.2} sx={{ minWidth: 0, overflowX: "hidden" }}>
+      <MDBox py={{ xs: 2, sm: 3 }} sx={{ minWidth: 0, overflowX: "hidden" }}>
         <SectionHeader
           title="Marketing data intelligence"
           subtitle="Descriptive patterns that explain portfolio structure, sales readiness, market concentration and whether lead scoring is producing better commercial outcomes."

@@ -23,7 +23,7 @@ export default function Account() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox py={{ xs: 2, sm: 3 }}>
         <SectionHeader
           title="Account"
           subtitle="Current identity, role and effective application permissions."

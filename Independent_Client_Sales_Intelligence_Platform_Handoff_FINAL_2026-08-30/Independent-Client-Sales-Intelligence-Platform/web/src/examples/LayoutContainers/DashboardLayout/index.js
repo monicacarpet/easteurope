@@ -5,8 +5,7 @@ import MDBox from "components/MDBox";
 import { useMaterialUIController, setLayout } from "context";
 import platformTokens from "assets/theme/platformTokens";
 import { OPEN_WIDTH, MINI_WIDTH } from "examples/Sidenav/SidenavRoot";
-
-const HEADER_HEIGHT = 64;
+import { HEADER_HEIGHT } from "config/mantisLayout";
 
 function DashboardLayout({ children }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -29,8 +28,8 @@ function DashboardLayout({ children }) {
           width: "100%",
           marginLeft: 0,
           pt: `${HEADER_HEIGHT}px`,
-          px: { xs: 2, sm: 2.5, md: 3 },
-          pb: 2.5,
+          px: { xs: 2, sm: 5 },
+          pb: { xs: 2, sm: 3 },
           position: "relative",
           overflowX: "hidden",
           boxSizing: "border-box",
@@ -45,7 +44,7 @@ function DashboardLayout({ children }) {
             maxWidth: "100%",
           },
 
-          [breakpoints.up("xl")]: {
+          [breakpoints.up("lg")]: {
             marginLeft: `${sidebarWidth}px`,
             width: `calc(100% - ${sidebarWidth}px)`,
           },

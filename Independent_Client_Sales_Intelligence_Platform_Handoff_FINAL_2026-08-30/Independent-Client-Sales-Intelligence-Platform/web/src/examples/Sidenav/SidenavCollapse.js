@@ -18,19 +18,27 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
           display: "flex",
           alignItems: "center",
           justifyContent: miniSidenav ? "center" : "flex-start",
-          minHeight: 40,
-          mx: 1.25,
-          mb: 0.35,
-          px: miniSidenav ? 1 : 1.35,
-          borderRadius: "6px",
+          minHeight: miniSidenav ? 44 : 40,
+          mx: 0,
+          mb: 0,
+          pl: miniSidenav ? 1.5 : 3.5,
+          pr: miniSidenav ? 1.5 : 2,
+          py: miniSidenav ? 0.5 : 0,
+          borderRight:
+            !miniSidenav && active
+              ? `2px solid ${platformTokens.sidebar.activeText}`
+              : "2px solid transparent",
           cursor: "pointer",
           whiteSpace: "nowrap",
           color: active ? platformTokens.sidebar.activeText : platformTokens.sidebar.text,
-          backgroundColor: active ? platformTokens.sidebar.activeBackground : "transparent",
+          backgroundColor:
+            !miniSidenav && active ? platformTokens.sidebar.activeBackground : "transparent",
           transition: "background-color 140ms ease, color 140ms ease",
           "&:hover": {
             color: active ? platformTokens.sidebar.activeText : platformTokens.sidebar.text,
-            backgroundColor: active
+            backgroundColor: miniSidenav
+              ? "transparent"
+              : active
               ? platformTokens.sidebar.activeBackground
               : platformTokens.sidebar.hoverBackground,
           },
@@ -38,12 +46,15 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
       >
         <ListItemIcon
           sx={{
-            minWidth: miniSidenav ? 0 : 32,
-            width: 20,
-            height: 20,
+            minWidth: miniSidenav ? 36 : 28,
+            width: miniSidenav ? 36 : 20,
+            height: miniSidenav ? 36 : 20,
             mr: miniSidenav ? 0 : 0.8,
             display: "grid",
             placeItems: "center",
+            borderRadius: miniSidenav ? "6px" : 0,
+            backgroundColor:
+              miniSidenav && active ? platformTokens.sidebar.activeBackground : "transparent",
             color: active ? platformTokens.sidebar.activeText : platformTokens.sidebar.muted,
             "& .MuiIcon-root": {
               width: 19,

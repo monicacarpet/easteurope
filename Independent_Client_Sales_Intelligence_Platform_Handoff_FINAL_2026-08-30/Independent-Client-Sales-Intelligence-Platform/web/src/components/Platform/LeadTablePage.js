@@ -257,7 +257,7 @@ export default function LeadTablePage({ mine }) {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox py={{ xs: 2, sm: 3 }}>
         <PageState
           loading={state.loading}
           error={state.error}

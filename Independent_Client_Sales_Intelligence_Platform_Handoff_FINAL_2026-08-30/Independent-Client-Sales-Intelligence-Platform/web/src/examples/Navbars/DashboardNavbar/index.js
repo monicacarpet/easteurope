@@ -22,6 +22,7 @@ import { useAuth } from "auth/AuthContext";
 import platformTokens from "assets/theme/platformTokens";
 import { OPEN_WIDTH, MINI_WIDTH } from "examples/Sidenav/SidenavRoot";
 import { HEADER_HEIGHT } from "examples/LayoutContainers/DashboardLayout";
+import LanguageSwitcher from "components/Platform/LanguageSwitcher";
 
 function initials(name) {
   return String(name || "Platform")
@@ -82,7 +83,7 @@ export default function DashboardNavbar({ isMini = false }) {
           duration: transitions.duration.shorter,
         }),
 
-        [breakpoints.up("xl")]: {
+        [breakpoints.up("lg")]: {
           left: `${sidebarWidth}px`,
           width: `calc(100% - ${sidebarWidth}px)`,
         },
@@ -91,7 +92,7 @@ export default function DashboardNavbar({ isMini = false }) {
       <Box
         sx={{
           height: HEADER_HEIGHT,
-          px: { xs: 1.5, sm: 2, md: 2.5 },
+          px: { xs: 2, sm: 3 },
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -161,6 +162,8 @@ export default function DashboardNavbar({ isMini = false }) {
                 PREVIEW
               </Typography>
             ) : null}
+
+            <LanguageSwitcher inline />
 
             <Tooltip title="Notifications">
               <IconButton

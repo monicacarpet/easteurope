@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Fade from "@mui/material/Fade";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import additionalTranslations from "i18n/additionalTranslations";
 
-const LANGUAGE_KEY = "platform-ui-language";
-const POSITION_KEY = "platform-ui-language-position";
-
-const EDGE_GAP = 10;
+export const LANGUAGE_KEY = "platform-ui-language";
 
 const SAFE_TEXT_REPLACEMENTS = [
   [
@@ -292,10 +293,26 @@ const TRANSLATIONS = [
   ["Key Insights", "关键洞察"],
   ["Generated On", "生成时间"],
   ["Period", "期间"],
+  ...additionalTranslations,
 ];
 
 const EN_TO_ZH = new Map(TRANSLATIONS);
 const ZH_TO_EN = new Map(TRANSLATIONS.map(([english, chinese]) => [chinese, english]));
+
+function normalizeTranslationKey(value) {
+  return String(value || "")
+    .trim()
+    .toLocaleLowerCase("en")
+    .replace(/[_.-]+/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+const NORMALIZED_EN_TO_ZH = new Map(
+  TRANSLATIONS.map(([english, chinese]) => [normalizeTranslationKey(english), chinese])
+);
+const NORMALIZED_ZH_TO_EN = new Map(
+  TRANSLATIONS.map(([english, chinese]) => [normalizeTranslationKey(chinese), english])
+);
 
 const DYNAMIC_PATTERNS = [
   {
@@ -346,6 +363,60 @@ const DYNAMIC_PATTERNS = [
     toZh: (match) => `${match[1]} 条线索已有明确采购人或决策人`,
     toEn: (match) => `${match[1]} leads have a named buyer or decision-maker`,
   },
+  {
+    en: /^([\d,.]+) models$/,
+    zh: /^([\d,.]+) 个型号$/,
+    toZh: (match) => `${match[1]} 个型号`,
+    toEn: (match) => `${match[1]} models`,
+  },
+  {
+    en: /^([\d,.]+) countries in current view$/,
+    zh: /^([\d,.]+) 个当前视图中的国家$/,
+    toZh: (match) => `${match[1]} 个当前视图中的国家`,
+    toEn: (match) => `${match[1]} countries in current view`,
+  },
+  {
+    en: /^([\d,.]+) records match the current filters$/,
+    zh: /^([\d,.]+) 条记录符合当前筛选条件$/,
+    toZh: (match) => `${match[1]} 条记录符合当前筛选条件`,
+    toEn: (match) => `${match[1]} records match the current filters`,
+  },
+  {
+    en: /^([\d,.]+) company locations plotted$/,
+    zh: /^([\d,.]+) 个公司位置已绘制$/,
+    toZh: (match) => `${match[1]} 个公司位置已绘制`,
+    toEn: (match) => `${match[1]} company locations plotted`,
+  },
+  {
+    en: /^([\d,.]+) visible on current map$/,
+    zh: /^([\d,.]+) 个在当前地图中可见$/,
+    toZh: (match) => `${match[1]} 个在当前地图中可见`,
+    toEn: (match) => `${match[1]} visible on current map`,
+  },
+  {
+    en: /^([\d,.]+) contacts consolidated at this location$/,
+    zh: /^([\d,.]+) 个联系人已合并到此位置$/,
+    toZh: (match) => `${match[1]} 个联系人已合并到此位置`,
+    toEn: (match) => `${match[1]} contacts consolidated at this location`,
+  },
+  {
+    en: /^([\d,.]+) scheduled actions$/,
+    zh: /^([\d,.]+) 项已安排的行动$/,
+    toZh: (match) => `${match[1]} 项已安排的行动`,
+    toEn: (match) => `${match[1]} scheduled actions`,
+  },
+  {
+    en: /^([\d,.]+) active lots$/,
+    zh: /^([\d,.]+) 个有效批次$/,
+    toZh: (match) => `${match[1]} 个有效批次`,
+    toEn: (match) => `${match[1]} active lots`,
+  },
+  {
+    en: /^([\d,.]+) countries reached$/,
+    zh: /^([\d,.]+) 个已触达国家$/,
+    toZh: (match) => `${match[1]} 个已触达国家`,
+    toEn: (match) => `${match[1]} countries reached`,
+  },
 ];
 
 function sanitizeTechnicalText(value) {
@@ -372,15 +443,31 @@ function translateCore(value, language) {
   const exact = language === "zh" ? EN_TO_ZH.get(value) : ZH_TO_EN.get(value);
   if (exact) return exact;
 
+  const normalized =
+    language === "zh"
+      ? NORMALIZED_EN_TO_ZH.get(normalizeTranslationKey(value))
+      : NORMALIZED_ZH_TO_EN.get(normalizeTranslationKey(value));
+  if (normalized) return normalized;
+
   for (const pattern of DYNAMIC_PATTERNS) {
     const match = value.match(language === "zh" ? pattern.en : pattern.zh);
     if (match) return language === "zh" ? pattern.toZh(match) : pattern.toEn(match);
   }
 
+  for (const separator of [" · ", " | "]) {
+    if (!value.includes(separator)) continue;
+
+    const parts = value.split(separator);
+    const translatedParts = parts.map((part) => translateCore(part, language));
+    if (translatedParts.some((part, index) => part !== parts[index])) {
+      return translatedParts.join(separator);
+    }
+  }
+
   return value;
 }
 
-function translateValue(value, language) {
+export function translateValue(value, language) {
   if (!value || typeof value !== "string") return value;
 
   const sanitized = sanitizeTechnicalText(value);
@@ -398,6 +485,9 @@ function translateNode(node, language) {
 
   if (node.nodeType === Node.TEXT_NODE) {
     if (!node.nodeValue?.trim()) return;
+    if (node.parentElement?.closest(".MuiIcon-root, .material-icons, [class*='material-icons']")) {
+      return;
+    }
 
     const translated = translateValue(node.nodeValue, language);
     if (translated !== node.nodeValue) node.nodeValue = translated;
@@ -416,7 +506,7 @@ function translateNode(node, language) {
   });
 }
 
-function translateTree(root, language) {
+export function translateTree(root, language) {
   if (!root) return;
 
   translateNode(root, language);
@@ -433,48 +523,11 @@ function translateTree(root, language) {
   document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
 }
 
-function defaultPosition() {
-  return {
-    x: window.innerWidth >= 900 ? 286 : 12,
-    y: 92,
-  };
-}
-
-export default function LanguageSwitcher() {
-  const controlRef = useRef(null);
-  const pointerRef = useRef(null);
-
+export default function LanguageSwitcher({ inline = false }) {
   const [language, setLanguage] = useState(() =>
     window.localStorage.getItem(LANGUAGE_KEY) === "zh" ? "zh" : "en"
   );
-  const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState(() => {
-    try {
-      const saved = JSON.parse(window.localStorage.getItem(POSITION_KEY));
-      if (Number.isFinite(saved?.x) && Number.isFinite(saved?.y)) return saved;
-    } catch (error) {
-      // Ignore an invalid saved position.
-    }
-
-    return defaultPosition();
-  });
-
-  const clampPosition = (nextPosition) => {
-    const rect = controlRef.current?.getBoundingClientRect();
-    const width = rect?.width || (open ? 244 : 92);
-    const height = rect?.height || 42;
-
-    return {
-      x: Math.min(
-        Math.max(EDGE_GAP, nextPosition.x),
-        Math.max(EDGE_GAP, window.innerWidth - width - EDGE_GAP)
-      ),
-      y: Math.min(
-        Math.max(EDGE_GAP, nextPosition.y),
-        Math.max(EDGE_GAP, window.innerHeight - height - EDGE_GAP)
-      ),
-    };
-  };
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     window.localStorage.setItem(LANGUAGE_KEY, language);
@@ -514,214 +567,86 @@ export default function LanguageSwitcher() {
     return () => observer.disconnect();
   }, [language]);
 
-  useEffect(() => {
-    const keepVisible = () => {
-      setPosition((current) => {
-        const next = clampPosition(current);
-        window.localStorage.setItem(POSITION_KEY, JSON.stringify(next));
-        return next;
-      });
-    };
-
-    keepVisible();
-    window.addEventListener("resize", keepVisible);
-
-    return () => window.removeEventListener("resize", keepVisible);
-  }, [open]);
-
   const chooseLanguage = (nextLanguage) => {
-    setOpen(false);
+    setAnchorEl(null);
 
     if (nextLanguage === language) return;
 
     translateTree(document.body, nextLanguage);
     window.localStorage.setItem(LANGUAGE_KEY, nextLanguage);
     setLanguage(nextLanguage);
-  };
-
-  const beginPointer = (event) => {
-    if (open) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-
-    pointerRef.current = {
-      pointerId: event.pointerId,
-      startClientX: event.clientX,
-      startClientY: event.clientY,
-      startX: position.x,
-      startY: position.y,
-      dragged: false,
-    };
-
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-  };
-
-  const movePointer = (event) => {
-    const pointer = pointerRef.current;
-    if (!pointer || pointer.pointerId !== event.pointerId) return;
-
-    const dx = event.clientX - pointer.startClientX;
-    const dy = event.clientY - pointer.startClientY;
-
-    if (!pointer.dragged && Math.hypot(dx, dy) < 6) return;
-
-    pointer.dragged = true;
-    event.preventDefault();
-
-    setPosition(
-      clampPosition({
-        x: pointer.startX + dx,
-        y: pointer.startY + dy,
-      })
+    window.dispatchEvent(
+      new CustomEvent("platform-language-change", { detail: { language: nextLanguage } })
     );
   };
 
-  const endPointer = (event) => {
-    const pointer = pointerRef.current;
-    if (!pointer || pointer.pointerId !== event.pointerId) return;
-
-    const dx = event.clientX - pointer.startClientX;
-    const dy = event.clientY - pointer.startClientY;
-    const dragged = pointer.dragged || Math.hypot(dx, dy) >= 6;
-
-    if (dragged) {
-      const next = clampPosition({
-        x: pointer.startX + dx,
-        y: pointer.startY + dy,
-      });
-
-      setPosition(next);
-      window.localStorage.setItem(POSITION_KEY, JSON.stringify(next));
-    } else {
-      setOpen(true);
-    }
-
-    pointerRef.current = null;
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-  };
-
-  const closedLabel = language === "zh" ? "中文" : "EN";
-
-  const pillBase = {
-    height: 38,
-    minHeight: 38,
-    borderRadius: "999px",
-    px: 2.25,
-    backgroundColor: "#EEF0F4",
-    color: "#4E586E",
-    boxShadow: "none",
-    fontSize: "13px",
-    fontWeight: 600,
-    letterSpacing: "-0.01em",
-    lineHeight: 1,
-    textTransform: "none",
-    transition: "all 180ms ease",
-    "&:hover": {
-      backgroundColor: "#E6E9EF",
-      boxShadow: "none",
-    },
-  };
-
   return (
-    <ClickAwayListener onClickAway={() => setOpen(false)}>
-      <Box
-        ref={controlRef}
+    <Box
+      sx={
+        inline
+          ? { display: "inline-flex", alignItems: "center" }
+          : { position: "fixed", top: 16, right: 20, zIndex: 1400 }
+      }
+    >
+      <Button
+        size="small"
+        disableElevation
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+        aria-label="Open language selector"
+        startIcon={<TranslateRoundedIcon sx={{ fontSize: "17px !important" }} />}
+        endIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: "16px !important" }} />}
         sx={{
-          position: "fixed",
-          top: `${position.y}px`,
-          left: `${position.x}px`,
-          zIndex: 999999,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 46,
-          userSelect: "none",
+          minWidth: 82,
+          height: 36,
+          px: 1.1,
+          color: "#262626",
+          backgroundColor: "#F5F5F5",
+          borderRadius: "6px",
+          fontSize: 12.5,
+          fontWeight: 500,
+          lineHeight: 1,
+          textTransform: "none",
+          boxShadow: "none",
+          "&:hover": { backgroundColor: "#E6F4FF", boxShadow: "none" },
+          "& .MuiButton-startIcon": { mr: 0.55 },
+          "& .MuiButton-endIcon": { ml: 0.3 },
         }}
       >
-        {!open ? (
-          <Fade in timeout={180}>
-            <Button
-              disableRipple
-              onPointerDown={beginPointer}
-              onPointerMove={movePointer}
-              onPointerUp={endPointer}
-              onPointerCancel={endPointer}
-              aria-label="Open language selector"
-              sx={{
-                ...pillBase,
-                minWidth: 92,
-                cursor: "grab",
-                touchAction: "none",
-                "&:active": {
-                  cursor: "grabbing",
-                  transform: "scale(0.97)",
-                },
-              }}
-            >
-              {closedLabel}
-            </Button>
-          </Fade>
-        ) : (
-          <Fade in timeout={180}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <Button
-                disableRipple
-                onClick={() => setOpen(false)}
-                aria-label="Back"
-                sx={{
-                  ...pillBase,
-                  width: 38,
-                  minWidth: 38,
-                  px: 0,
-                  fontSize: "22px",
-                  fontWeight: 400,
-                }}
-              >
-                ‹
-              </Button>
+        {language === "zh" ? "中文" : "EN"}
+      </Button>
 
-              <Button
-                disableRipple
-                onClick={() => chooseLanguage("en")}
-                sx={{
-                  ...pillBase,
-                  minWidth: 82,
-                  backgroundColor: language === "en" ? "#E3E8F3" : "#EEF0F4",
-                  color: language === "en" ? "#182858" : "#4E586E",
-                  "&:hover": {
-                    backgroundColor: language === "en" ? "#DCE3F0" : "#E6E9EF",
-                  },
-                }}
-              >
-                English
-              </Button>
-
-              <Button
-                disableRipple
-                onClick={() => chooseLanguage("zh")}
-                sx={{
-                  ...pillBase,
-                  minWidth: 72,
-                  backgroundColor: language === "zh" ? "#E3E8F3" : "#EEF0F4",
-                  color: language === "zh" ? "#182858" : "#4E586E",
-                  "&:hover": {
-                    backgroundColor: language === "zh" ? "#DCE3F0" : "#E6E9EF",
-                  },
-                }}
-              >
-                中文
-              </Button>
-            </Box>
-          </Fade>
-        )}
-      </Box>
-    </ClickAwayListener>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{ dense: true }}
+        PaperProps={{
+          sx: {
+            mt: 0.8,
+            minWidth: 132,
+            border: "1px solid #E6EBF1",
+            borderRadius: "8px",
+            boxShadow: "0 6px 16px rgba(0,0,0,.08)",
+          },
+        }}
+      >
+        <MenuItem
+          selected={language === "en"}
+          onClick={() => chooseLanguage("en")}
+          sx={{ fontSize: 13, py: 0.9 }}
+        >
+          English
+        </MenuItem>
+        <MenuItem
+          selected={language === "zh"}
+          onClick={() => chooseLanguage("zh")}
+          sx={{ fontSize: 13, py: 0.9 }}
+        >
+          中文
+        </MenuItem>
+      </Menu>
+    </Box>
   );
 }
+
+LanguageSwitcher.propTypes = { inline: PropTypes.bool };

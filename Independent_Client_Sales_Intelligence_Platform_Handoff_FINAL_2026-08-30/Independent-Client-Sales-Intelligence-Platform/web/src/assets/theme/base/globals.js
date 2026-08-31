@@ -5,18 +5,18 @@ const { info, dark } = colors;
 const globals = {
   html: {
     scrollBehavior: "smooth",
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FAFAFB",
   },
   body: {
     margin: 0,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FAFAFB",
     color: "#262626",
     overflowX: "hidden",
   },
   "#root, #app": {
     minHeight: "100vh",
     width: "100%",
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FAFAFB",
   },
   "*, *::before, *::after": {
     boxSizing: "border-box",

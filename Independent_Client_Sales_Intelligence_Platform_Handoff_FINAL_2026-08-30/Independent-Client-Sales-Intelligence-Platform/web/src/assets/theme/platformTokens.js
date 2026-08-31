@@ -16,7 +16,7 @@ const platformTokens = {
     hoverBackground: "#F5F5F5",
   },
   surface: {
-    canvas: "#F8F9FA",
+    canvas: "#FAFAFB",
     card: "#FFFFFF",
     cardMuted: "#FAFAFA",
     border: "#E6EBF1",

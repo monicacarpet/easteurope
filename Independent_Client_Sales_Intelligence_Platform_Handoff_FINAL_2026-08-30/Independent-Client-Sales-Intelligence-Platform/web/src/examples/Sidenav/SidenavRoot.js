@@ -1,9 +1,7 @@
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import platformTokens from "assets/theme/platformTokens";
-
-const OPEN_WIDTH = 260;
-const MINI_WIDTH = 72;
+import { MINI_WIDTH, OPEN_WIDTH } from "config/mantisLayout";
 
 export default styled(Drawer)(({ theme, ownerState }) => {
   const { miniSidenav } = ownerState;
@@ -35,7 +33,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
         duration: transitions.duration.shorter,
       }),
 
-      [breakpoints.down("xl")]: {
+      [breakpoints.down("lg")]: {
         width: OPEN_WIDTH,
         transform: miniSidenav ? `translateX(-${OPEN_WIDTH}px)` : "translateX(0)",
         boxShadow: miniSidenav ? "none" : "0 8px 24px rgba(0,0,0,0.12)",

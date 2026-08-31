@@ -1,5 +1,5 @@
 const colors = {
-  background: { default: "#F8F9FA" },
+  background: { default: "#FAFAFB" },
   text: { main: "#595959", focus: "#262626" },
   transparent: { main: "transparent" },
   white: { main: "#FFFFFF", focus: "#FFFFFF" },

@@ -55,7 +55,7 @@ export default function App() {
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      <LanguageSwitcher />
+      {!isAuthenticated ? <LanguageSwitcher /> : null}
       {isAuthenticated && layout === "dashboard" ? (
         <Sidenav
           color={sidenavColor}

@@ -291,7 +291,7 @@ export default function GIS() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox py={{ xs: 2, sm: 3 }}>
         <PageState loading={state.loading} error={state.error} label="Loading GIS lead portfolio…">
           <>
             <SectionHeader

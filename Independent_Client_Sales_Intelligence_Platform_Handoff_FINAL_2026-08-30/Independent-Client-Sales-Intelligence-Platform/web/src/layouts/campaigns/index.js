@@ -930,7 +930,7 @@ export default function Campaigns() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Box sx={{ py: { xs: 2.5, md: 3.5 }, minWidth: 0 }}>
+      <Box sx={{ py: { xs: 2, sm: 3 }, minWidth: 0 }}>
         <PageState loading={state.loading} error={state.error} label="Loading campaign controls…">
           {data ? (
             <>

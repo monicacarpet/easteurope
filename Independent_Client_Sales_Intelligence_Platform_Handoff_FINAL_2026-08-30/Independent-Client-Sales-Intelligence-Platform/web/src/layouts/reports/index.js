@@ -837,7 +837,7 @@ export default function Reports() {
     <DashboardLayout>
       <style>{REPORT_PRINT_CSS}</style>
       <DashboardNavbar />
-      <Box sx={{ py: 2.2 }}>
+      <Box sx={{ py: { xs: 2, sm: 3 } }}>
         <PageState loading={state.loading} error={state.error} label="Loading reporting data…">
           {source ? (
             <>

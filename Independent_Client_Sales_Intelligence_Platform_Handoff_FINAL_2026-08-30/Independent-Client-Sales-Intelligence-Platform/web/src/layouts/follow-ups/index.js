@@ -145,7 +145,7 @@ export default function FollowUps() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={2.2} sx={{ minWidth: 0 }}>
+      <MDBox py={{ xs: 2, sm: 3 }} sx={{ minWidth: 0 }}>
         <PageState loading={state.loading} error={state.error} label="Loading follow-up schedule…">
           <>
             <Box sx={{ mb: 2.2 }}>

@@ -14,6 +14,7 @@ import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import { useMaterialUIController, setMiniSidenav } from "context";
 import { useAuth } from "auth/AuthContext";
 import platformTokens from "assets/theme/platformTokens";
+import { MANTIS_BREAKPOINTS } from "config/mantisLayout";
 
 function NavIcon({ name }) {
   return (
@@ -65,12 +66,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { profile, signOut } = useAuth();
 
   const closeMobile = () => {
-    if (window.innerWidth < 1200) setMiniSidenav(dispatch, true);
+    if (window.innerWidth < MANTIS_BREAKPOINTS.lg) setMiniSidenav(dispatch, true);
   };
 
   useEffect(() => {
     function handleViewport() {
-      if (window.innerWidth < 1200) setMiniSidenav(dispatch, true);
+      // Match Mantis: temporary navigation below lg, mini navigation between lg and xl,
+      // and the full 260px drawer on wide desktop screens.
+      setMiniSidenav(dispatch, window.innerWidth < MANTIS_BREAKPOINTS.xl);
     }
 
     window.addEventListener("resize", handleViewport);
@@ -144,7 +147,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       data-sidenav-color={color}
     >
       <MDBox
-        height={64}
+        height={60}
         px={miniSidenav ? 1.25 : 2.25}
         display="flex"
         alignItems="center"
@@ -209,7 +212,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           size="small"
           onClick={closeMobile}
           sx={{
-            display: { xs: "inline-flex", xl: "none" },
+            display: { xs: "inline-flex", lg: "none" },
             color: platformTokens.sidebar.muted,
             ml: 0.5,
           }}

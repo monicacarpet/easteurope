@@ -1060,7 +1060,7 @@ function Dashboard() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={2.2} sx={{ minWidth: 0, overflowX: "hidden" }}>
+      <MDBox py={{ xs: 2, sm: 3 }} sx={{ minWidth: 0, overflowX: "hidden" }}>
         <PageState
           loading={state.loading}
           error={state.error}
