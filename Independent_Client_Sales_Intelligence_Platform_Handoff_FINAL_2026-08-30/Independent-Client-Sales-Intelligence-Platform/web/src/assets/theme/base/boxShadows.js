@@ -111,7 +111,12 @@ const boxShadows = {
     thumb: boxShadow([0, 1], [13, 0], black.main, 0.2),
   },
   tabsBoxShadow: {
-    indicator: boxShadow([0, 1], [5, 1], tabs.indicator.boxShadow, 1),
+    // Mantis uses a flat tab indicator. Do not pass the CSS keyword `none`
+    // through boxShadow(), which expects a hex color and crashes at startup.
+    indicator:
+      tabs.indicator.boxShadow === "none"
+        ? "none"
+        : boxShadow([0, 1], [5, 1], tabs.indicator.boxShadow, 1),
   },
 };
 
