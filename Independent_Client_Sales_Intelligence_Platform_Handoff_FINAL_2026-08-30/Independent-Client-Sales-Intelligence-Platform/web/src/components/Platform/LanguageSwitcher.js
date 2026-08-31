@@ -4,8 +4,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
-import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import { DownOutlined, TranslationOutlined } from "@ant-design/icons";
 import additionalTranslations from "i18n/additionalTranslations";
 
 export const LANGUAGE_KEY = "platform-ui-language";
@@ -523,7 +522,7 @@ export function translateTree(root, language) {
   document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
 }
 
-export default function LanguageSwitcher({ inline = false }) {
+export default function LanguageSwitcher({ inline = false, dark = false }) {
   const [language, setLanguage] = useState(() =>
     window.localStorage.getItem(LANGUAGE_KEY) === "zh" ? "zh" : "en"
   );
@@ -593,21 +592,25 @@ export default function LanguageSwitcher({ inline = false }) {
         disableElevation
         onClick={(event) => setAnchorEl(event.currentTarget)}
         aria-label="Open language selector"
-        startIcon={<TranslateRoundedIcon sx={{ fontSize: "17px !important" }} />}
-        endIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: "16px !important" }} />}
+        startIcon={<TranslationOutlined style={{ fontSize: 16 }} />}
+        endIcon={<DownOutlined style={{ fontSize: 9 }} />}
         sx={{
           minWidth: 82,
           height: 36,
           px: 1.1,
-          color: "#262626",
-          backgroundColor: "#F5F5F5",
-          borderRadius: "6px",
+          color: dark ? "#E2E8F0" : "#172033",
+          backgroundColor: dark ? "rgba(255,255,255,.08)" : "#F1F5F9",
+          border: dark ? "1px solid rgba(255,255,255,.12)" : "1px solid #DDE5E8",
+          borderRadius: "10px",
           fontSize: 12.5,
           fontWeight: 500,
           lineHeight: 1,
           textTransform: "none",
           boxShadow: "none",
-          "&:hover": { backgroundColor: "#E6F4FF", boxShadow: "none" },
+          "&:hover": {
+            backgroundColor: dark ? "rgba(255,255,255,.14)" : "#CCFBF1",
+            boxShadow: "none",
+          },
           "& .MuiButton-startIcon": { mr: 0.55 },
           "& .MuiButton-endIcon": { ml: 0.3 },
         }}
@@ -649,4 +652,4 @@ export default function LanguageSwitcher({ inline = false }) {
   );
 }
 
-LanguageSwitcher.propTypes = { inline: PropTypes.bool };
+LanguageSwitcher.propTypes = { inline: PropTypes.bool, dark: PropTypes.bool };

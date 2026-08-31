@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import Alert from "@mui/material/Alert";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import DataTable from "examples/Tables/DataTable";
@@ -11,6 +10,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
@@ -282,12 +282,7 @@ export default function LeadTablePage({ mine }) {
                       downloadCsv(mine ? "platform-my-leads.csv" : "platform-leads.csv", filtered)
                     }
                   >
-                    <Icon
-                      baseClassName="material-icons-outlined"
-                      sx={{ fontSize: "17px !important" }}
-                    >
-                      download
-                    </Icon>
+                    <PlatformIcon name="download" size={17} />
                     &nbsp; export filtered
                   </MDButton>
                 ) : null

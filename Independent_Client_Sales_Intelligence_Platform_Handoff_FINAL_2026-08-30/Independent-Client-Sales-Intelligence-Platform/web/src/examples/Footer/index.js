@@ -10,7 +10,7 @@ export default function Footer() {
       display="flex"
       justifyContent="space-between"
       alignItems="center"
-      px={{ xs: 2, md: 3 }}
+      px={0}
       py={2}
       sx={{ borderTop: `1px solid ${platformTokens.surface.border}` }}
     >

@@ -1,28 +1,20 @@
-import { useEffect, useLayoutEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Sidenav from "examples/Sidenav";
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
 import routes from "routes";
 import { useMaterialUIController } from "context";
 import { useAuth } from "auth/AuthContext";
 import ProtectedRoute from "auth/ProtectedRoute";
-import brand from "assets/images/platform-logo.svg";
 import LanguageSwitcher from "components/Platform/LanguageSwitcher";
-import { BRAND_SHORT_NAME } from "config/brand";
 
 export default function App() {
   const [controller] = useMaterialUIController();
-  const { layout, sidenavColor, darkMode } = controller;
+  const { darkMode } = controller;
   const { pathname } = useLocation();
-  const { isAuthenticated, profile } = useAuth();
-
-  const visibleRoutes = useMemo(
-    () => routes.filter((route) => !route.roles || route.roles.includes(profile?.role)),
-    [profile]
-  );
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     document.body.setAttribute("dir", "ltr");
@@ -56,14 +48,6 @@ export default function App() {
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {!isAuthenticated ? <LanguageSwitcher /> : null}
-      {isAuthenticated && layout === "dashboard" ? (
-        <Sidenav
-          color={sidenavColor}
-          brand={brand}
-          brandName={BRAND_SHORT_NAME}
-          routes={visibleRoutes}
-        />
-      ) : null}
       <Routes>
         {getRoutes(routes)}
         <Route

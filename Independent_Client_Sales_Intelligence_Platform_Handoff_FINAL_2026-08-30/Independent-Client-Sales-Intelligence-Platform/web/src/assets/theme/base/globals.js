@@ -5,18 +5,18 @@ const { info, dark } = colors;
 const globals = {
   html: {
     scrollBehavior: "smooth",
-    backgroundColor: "#FAFAFB",
+    backgroundColor: "#F4F7F9",
   },
   body: {
     margin: 0,
-    backgroundColor: "#FAFAFB",
-    color: "#262626",
+    backgroundColor: "#F4F7F9",
+    color: "#172033",
     overflowX: "hidden",
   },
   "#root, #app": {
     minHeight: "100vh",
     width: "100%",
-    backgroundColor: "#FAFAFB",
+    backgroundColor: "#F4F7F9",
   },
   "*, *::before, *::after": {
     boxSizing: "border-box",
@@ -35,6 +35,9 @@ const globals = {
     minWidth: 0,
     maxWidth: "100%",
   },
+  ".MuiGrid-container": {
+    minWidth: 0,
+  },
   ".MuiTableContainer-root": {
     width: "100%",
     maxWidth: "100%",
@@ -42,6 +45,12 @@ const globals = {
   },
   "canvas, svg": {
     maxWidth: "100%",
+  },
+  ".anticon": {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    verticalAlign: "-0.125em",
   },
   ".maplibregl-map": {
     maxWidth: "100%",

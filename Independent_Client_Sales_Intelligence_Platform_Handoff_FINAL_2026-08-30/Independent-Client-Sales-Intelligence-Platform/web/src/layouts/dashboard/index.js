@@ -7,13 +7,13 @@ import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
 import Divider from "@mui/material/Divider";
-import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import PageState from "components/Platform/PageState";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import useAsyncData from "hooks/useAsyncData";
 import { getDashboardData } from "services/api";
 import { number, percent } from "lib/format";
@@ -40,31 +40,24 @@ ChartJS.register(
 );
 
 const COLORS = {
-  navy: "#1677FF",
-  blue: "#1677FF",
+  navy: "#0F766E",
+  blue: "#0F766E",
   orange: "#FAAD14",
   coral: "#FF4D4F",
   green: "#52C41A",
   red: "#FF4D4F",
   purple: "#722ED1",
-  pale: "#91CAFF",
-  text: "#262626",
-  muted: "#8C8C8C",
-  border: "#E6EBF1",
-  grid: "#F0F0F0",
+  pale: "#99F6E4",
+  text: "#172033",
+  muted: "#64748B",
+  border: "#DDE5E8",
+  grid: "#E2E8F0",
   surface: "#FFFFFF",
   soft: "#FAFAFA",
 };
 
 function OutlineIcon({ name, size = 18, color = "inherit" }) {
-  return (
-    <Icon
-      baseClassName="material-icons-outlined"
-      sx={{ fontSize: `${size}px !important`, lineHeight: 1, color }}
-    >
-      {name}
-    </Icon>
-  );
+  return <PlatformIcon name={name} size={size} color={color} />;
 }
 
 OutlineIcon.propTypes = {
@@ -117,9 +110,9 @@ function Section({ children, sx = {} }) {
   return (
     <Card
       sx={{
-        borderRadius: "8px",
+        borderRadius: "14px",
         border: `1px solid ${COLORS.border}`,
-        boxShadow: "none",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
         overflow: "hidden",
         minWidth: 0,
         ...sx,
@@ -142,7 +135,8 @@ function Metric({ icon, label, value, detail, accent = COLORS.navy }) {
         p: 2.1,
         minHeight: 112,
         border: `1px solid ${COLORS.border}`,
-        borderRadius: "8px",
+        borderRadius: "14px",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
         backgroundColor: COLORS.surface,
       }}
     >

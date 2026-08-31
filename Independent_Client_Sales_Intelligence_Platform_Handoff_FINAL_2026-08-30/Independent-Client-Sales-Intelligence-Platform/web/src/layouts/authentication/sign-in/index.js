@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -113,8 +113,8 @@ export default function SignIn() {
               disabled={loading}
               sx={{ borderRadius: "6px", boxShadow: "none", textTransform: "none" }}
             >
-              <Icon>login</Icon>&nbsp;{" "}
-              {demoMode ? "Open preview dashboard" : loading ? "Signing in…" : "Sign in"}
+              <PlatformIcon name="login" size={16} />
+              &nbsp; {demoMode ? "Open preview dashboard" : loading ? "Signing in…" : "Sign in"}
             </MDButton>
           </MDBox>
           <MDBox mt={2} textAlign="center">

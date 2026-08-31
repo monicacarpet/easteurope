@@ -7,9 +7,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import { addFollowup, addLeadNote, getLeadWorkspace } from "services/api";
@@ -113,9 +113,7 @@ export default function LeadWorkspace({ lead, open, onClose }) {
                 variant="button"
                 color="info"
               >
-                <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "16px !important" }}>
-                  open_in_new
-                </Icon>
+                <PlatformIcon name="open_in_new" size={16} />
                 &nbsp; open company website
               </MDTypography>
               <MDTypography variant="caption" color="text">

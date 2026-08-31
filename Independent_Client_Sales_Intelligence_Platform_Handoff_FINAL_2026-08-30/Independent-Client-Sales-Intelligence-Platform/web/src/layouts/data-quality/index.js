@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import Stack from "@mui/material/Stack";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -12,6 +11,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PageState from "components/Platform/PageState";
 import SectionHeader from "components/Platform/SectionHeader";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import useAsyncData from "hooks/useAsyncData";
 import { getDataQuality } from "services/api";
 import { number } from "lib/format";
@@ -85,9 +85,7 @@ function Kpi({ label, value, detail, icon, color = COLORS.navy }) {
               flexShrink: 0,
             }}
           >
-            <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "19px !important" }}>
-              {icon}
-            </Icon>
+            <PlatformIcon name={icon} size={19} />
           </Box>
         </Stack>
       </Box>

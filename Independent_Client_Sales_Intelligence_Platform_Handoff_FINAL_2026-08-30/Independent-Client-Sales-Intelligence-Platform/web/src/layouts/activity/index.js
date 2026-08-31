@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -9,6 +8,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PageState from "components/Platform/PageState";
 import SectionHeader from "components/Platform/SectionHeader";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import useAsyncData from "hooks/useAsyncData";
 import { getActivity } from "services/api";
 import { dateTime } from "lib/format";
@@ -57,18 +57,13 @@ export default function Activity() {
               title="Activity log"
               subtitle="Auditable ownership, campaign, stock and follow-up events across the Platform sales workflow."
             />
-            <Card sx={{ borderRadius: "10px", boxShadow: "none", border: "1px solid #e3e8f0" }}>
+            <Card sx={{ borderRadius: "14px", border: "1px solid #DDE5E8" }}>
               <MDBox pt={3} px={3}>
                 <MDTypography variant="h6" fontWeight="medium">
                   Latest operational events
                 </MDTypography>
                 <MDBox mt={0.3} mb={2} display="flex" alignItems="center" gap={0.7}>
-                  <Icon
-                    baseClassName="material-icons-outlined"
-                    sx={{ fontSize: "17px !important", color: "#2E9D68" }}
-                  >
-                    history
-                  </Icon>
+                  <PlatformIcon name="history" size={17} color="#0F766E" />
                   <MDTypography variant="button" color="text" fontWeight="regular">
                     newest activity appears first
                   </MDTypography>

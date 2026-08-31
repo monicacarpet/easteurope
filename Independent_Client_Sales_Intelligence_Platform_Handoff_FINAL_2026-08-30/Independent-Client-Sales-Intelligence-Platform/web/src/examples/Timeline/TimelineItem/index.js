@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import { useTimeline } from "examples/Timeline/context";
 import timelineItem from "examples/Timeline/TimelineItem/styles";
 
@@ -27,12 +27,7 @@ function TimelineItem({ color, icon, title, dateTime, description, lastItem }) {
           color: palette[color]?.main || "#26336F",
         })}
       >
-        <Icon
-          baseClassName="material-icons-outlined"
-          sx={{ fontSize: "16px !important", lineHeight: 1 }}
-        >
-          {icon}
-        </Icon>
+        <PlatformIcon name={icon} size={16} />
       </MDBox>
       <MDBox ml={5.75} pt={description ? 0.7 : 0.5} lineHeight={0} maxWidth="30rem">
         <MDTypography variant="button" fontWeight="medium" color={isDark ? "white" : "dark"}>

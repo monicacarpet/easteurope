@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import Alert from "@mui/material/Alert";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import LinearProgress from "@mui/material/LinearProgress";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
@@ -23,6 +22,7 @@ import MDButton from "components/MDButton";
 import MDBadge from "components/MDBadge";
 import PageState from "components/Platform/PageState";
 import SectionHeader from "components/Platform/SectionHeader";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import StockUploadDialog from "components/Platform/StockUploadDialog";
 import useAsyncData from "hooks/useAsyncData";
 import useSessionState from "hooks/useSessionState";
@@ -426,12 +426,7 @@ function Stock() {
                       color="info"
                       onClick={() => setPriceListOpen(true)}
                     >
-                      <Icon
-                        baseClassName="material-icons-outlined"
-                        sx={{ fontSize: "17px !important" }}
-                      >
-                        request_quote
-                      </Icon>
+                      <PlatformIcon name="request_quote" size={17} />
                       &nbsp; client price list
                     </MDButton>
                     <MDButton
@@ -446,12 +441,7 @@ function Stock() {
                         )
                       }
                     >
-                      <Icon
-                        baseClassName="material-icons-outlined"
-                        sx={{ fontSize: "17px !important" }}
-                      >
-                        download
-                      </Icon>
+                      <PlatformIcon name="download" size={17} />
                       &nbsp; export current
                     </MDButton>
                   </MDBox>
@@ -915,12 +905,7 @@ function Stock() {
                           onClick={capture}
                           sx={{ flexShrink: 0 }}
                         >
-                          <Icon
-                            baseClassName="material-icons-outlined"
-                            sx={{ fontSize: "17px !important" }}
-                          >
-                            photo_camera
-                          </Icon>
+                          <PlatformIcon name="photo_camera" size={17} />
                           &nbsp; capture monthly snapshot
                         </MDButton>
                       ) : null}
@@ -949,16 +934,11 @@ function Stock() {
                             height: 48,
                             flexShrink: 0,
                             borderRadius: "13px",
-                            color: "#377DFF",
-                            backgroundColor: "#EAF2FF",
+                            color: "#0F766E",
+                            backgroundColor: "#CCFBF1",
                           }}
                         >
-                          <Icon
-                            baseClassName="material-icons-outlined"
-                            sx={{ fontSize: "27px !important" }}
-                          >
-                            upload_file
-                          </Icon>
+                          <PlatformIcon name="upload_file" size={27} />
                         </MDBox>
                         <MDBox>
                           <MDTypography
@@ -990,22 +970,17 @@ function Stock() {
                         onClick={() => setUploadOpen(true)}
                         sx={{
                           color: "#fff !important",
-                          backgroundColor: "#377DFF !important",
-                          borderRadius: "8px",
+                          backgroundColor: "#0F766E !important",
+                          borderRadius: "10px",
                           px: 3.25,
                           py: 1.15,
                           minWidth: { md: 190 },
                           boxShadow: "none",
                           textTransform: "none",
-                          "&:hover": { backgroundColor: "#528FFF !important", boxShadow: "none" },
+                          "&:hover": { backgroundColor: "#0B5F59 !important", boxShadow: "none" },
                         }}
                       >
-                        <Icon
-                          baseClassName="material-icons-outlined"
-                          sx={{ fontSize: "18px !important" }}
-                        >
-                          upload
-                        </Icon>
+                        <PlatformIcon name="upload" size={18} />
                         &nbsp; Choose stock file
                       </MDButton>
                     </MDBox>

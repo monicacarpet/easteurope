@@ -11,7 +11,7 @@ export default function SectionHeader({ title, subtitle, action }) {
       alignItems={{ xs: "flex-start", md: "center" }}
       flexDirection={{ xs: "column", md: "row" }}
       gap={1.5}
-      mb={2.5}
+      mb={3}
       minWidth={0}
     >
       <MDBox minWidth={0}>
@@ -19,9 +19,10 @@ export default function SectionHeader({ title, subtitle, action }) {
           variant="h4"
           sx={{
             color: platformTokens.text.primary,
-            fontSize: 20,
-            fontWeight: 600,
-            lineHeight: 1.35,
+            fontSize: { xs: 21, md: 24 },
+            fontWeight: 700,
+            lineHeight: 1.25,
+            letterSpacing: "-0.025em",
           }}
         >
           {title}
@@ -29,7 +30,7 @@ export default function SectionHeader({ title, subtitle, action }) {
         {subtitle ? (
           <MDTypography
             variant="body2"
-            sx={{ color: platformTokens.text.secondary, fontSize: 12.5, mt: 0.45, lineHeight: 1.5 }}
+            sx={{ color: platformTokens.text.secondary, fontSize: 13, mt: 0.55, lineHeight: 1.55 }}
           >
             {subtitle}
           </MDTypography>

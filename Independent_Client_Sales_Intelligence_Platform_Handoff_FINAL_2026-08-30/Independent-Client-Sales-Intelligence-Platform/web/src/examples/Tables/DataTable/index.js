@@ -26,7 +26,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Icon from "@mui/material/Icon";
 import Autocomplete from "@mui/material/Autocomplete";
 
 // Material Dashboard 2 React components
@@ -35,6 +34,7 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
 import ContinuousPagination from "components/Platform/ContinuousPagination";
+import PlatformIcon from "components/Platform/PlatformIcon";
 
 // Material Dashboard 2 React example components
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
@@ -286,7 +286,7 @@ function DataTable({
             >
               {canPreviousPage && (
                 <MDPagination item onClick={() => previousPage()}>
-                  <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
+                  <PlatformIcon name="chevron_left" size={15} />
                 </MDPagination>
               )}
               {renderPagination.length > 6 ? (
@@ -302,7 +302,7 @@ function DataTable({
               )}
               {canNextPage && (
                 <MDPagination item onClick={() => nextPage()}>
-                  <Icon sx={{ fontWeight: "bold" }}>chevron_right</Icon>
+                  <PlatformIcon name="chevron_right" size={15} />
                 </MDPagination>
               )}
             </MDPagination>

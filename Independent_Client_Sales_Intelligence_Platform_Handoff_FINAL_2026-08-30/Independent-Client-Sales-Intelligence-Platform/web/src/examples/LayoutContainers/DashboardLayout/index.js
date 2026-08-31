@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import Box from "@mui/material/Box";
 import MDBox from "components/MDBox";
 import { useMaterialUIController, setLayout } from "context";
 import platformTokens from "assets/theme/platformTokens";
-import { OPEN_WIDTH, MINI_WIDTH } from "examples/Sidenav/SidenavRoot";
-import { HEADER_HEIGHT } from "config/mantisLayout";
+import { WORKSPACE_MAX_WIDTH, WORKSPACE_SHELL_HEIGHT } from "config/workspaceLayout";
 
 function DashboardLayout({ children }) {
-  const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav } = controller;
+  const [, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -19,44 +18,40 @@ function DashboardLayout({ children }) {
   return (
     <MDBox
       component="main"
-      sx={({ breakpoints, transitions }) => {
-        const sidebarWidth = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
-
-        return {
-          minHeight: "100vh",
-          minWidth: 0,
-          width: "100%",
-          marginLeft: 0,
-          pt: `${HEADER_HEIGHT}px`,
-          px: { xs: 2, sm: 5 },
-          pb: { xs: 2, sm: 3 },
-          position: "relative",
-          overflowX: "hidden",
-          boxSizing: "border-box",
-          backgroundColor: platformTokens.surface.canvas,
-          transition: transitions.create(["margin-left", "width"], {
-            easing: transitions.easing.sharp,
-            duration: transitions.duration.shorter,
-          }),
-
-          "& > *": {
-            minWidth: 0,
-            maxWidth: "100%",
-          },
-
-          [breakpoints.up("lg")]: {
-            marginLeft: `${sidebarWidth}px`,
-            width: `calc(100% - ${sidebarWidth}px)`,
-          },
-        };
+      sx={{
+        minHeight: "100vh",
+        minWidth: 0,
+        width: "100%",
+        m: 0,
+        pt: `${WORKSPACE_SHELL_HEIGHT}px`,
+        position: "relative",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+        backgroundColor: platformTokens.surface.canvas,
       }}
     >
-      {children}
+      <Box
+        data-testid="workspace-content-frame"
+        sx={{
+          width: "100%",
+          maxWidth: `${WORKSPACE_MAX_WIDTH}px`,
+          mx: "auto",
+          px: { xs: 2, sm: 3, lg: 4.5 },
+          pb: { xs: 2, sm: 3 },
+          minWidth: 0,
+          boxSizing: "border-box",
+          "& > *": { minWidth: 0, maxWidth: "100%" },
+          "& .MuiTableContainer-root": { maxWidth: "100%", overflowX: "auto" },
+          "& .maplibregl-map": { maxWidth: "100%" },
+        }}
+      >
+        {children}
+      </Box>
     </MDBox>
   );
 }
 
 DashboardLayout.propTypes = { children: PropTypes.node.isRequired };
 
-export { HEADER_HEIGHT };
+export { WORKSPACE_SHELL_HEIGHT };
 export default DashboardLayout;

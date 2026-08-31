@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
-import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import platformTokens from "assets/theme/platformTokens";
 
 const ACCENTS = {
-  primary: "#1677FF",
+  primary: "#0F766E",
   secondary: "#8C8C8C",
-  info: "#1677FF",
+  info: "#0F766E",
   success: "#52C41A",
   warning: "#FAAD14",
   error: "#FF4D4F",
@@ -19,14 +19,7 @@ const ACCENTS = {
 
 function renderIcon(icon) {
   if (typeof icon !== "string") return icon;
-  return (
-    <Icon
-      baseClassName="material-icons-outlined"
-      sx={{ fontSize: "19px !important", lineHeight: 1 }}
-    >
-      {icon}
-    </Icon>
-  );
+  return <PlatformIcon name={icon} size={19} />;
 }
 
 function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
@@ -37,9 +30,9 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
       sx={{
         height: "100%",
         minHeight: 112,
-        borderRadius: "8px",
+        borderRadius: "14px",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
         border: `1px solid ${platformTokens.surface.border}`,
-        boxShadow: "none",
         overflow: "hidden",
       }}
     >

@@ -1,7 +1,7 @@
 const root = {
   minHeight: 36,
   padding: "7px 15px",
-  borderRadius: 6,
+  borderRadius: 10,
   fontSize: "0.875rem",
   fontWeight: 500,
   lineHeight: 1.4,

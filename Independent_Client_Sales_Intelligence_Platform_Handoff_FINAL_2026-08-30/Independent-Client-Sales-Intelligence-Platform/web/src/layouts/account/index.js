@@ -1,6 +1,5 @@
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -9,6 +8,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDBadge from "components/MDBadge";
 import SectionHeader from "components/Platform/SectionHeader";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import { useAuth } from "auth/AuthContext";
 
 export default function Account() {
@@ -43,12 +43,7 @@ export default function Account() {
                   mb={2}
                   sx={{ border: "1px solid #E6EBF3", backgroundColor: "#F8FAFD", color: "#26336F" }}
                 >
-                  <Icon
-                    baseClassName="material-icons-outlined"
-                    sx={{ fontSize: "26px !important" }}
-                  >
-                    person_outline
-                  </Icon>
+                  <PlatformIcon name="person_outline" size={26} />
                 </MDBox>
                 <MDTypography variant="h5" fontWeight="medium">
                   {profile?.full_name || "Platform user"}

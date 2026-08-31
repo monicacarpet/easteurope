@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import ButtonBase from "@mui/material/ButtonBase";
-import Icon from "@mui/material/Icon";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import Typography from "@mui/material/Typography";
 
 const COLORS = {
@@ -53,9 +53,7 @@ export default function ContinuousPagination({
         sx={controlSx}
         aria-label="Previous page"
       >
-        <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "20px !important" }}>
-          chevron_left
-        </Icon>
+        <PlatformIcon name="chevron_left" size={18} />
       </IconButton>
 
       {pages[0] > 0 ? (
@@ -107,9 +105,7 @@ export default function ContinuousPagination({
       ) : null}
 
       <IconButton disabled={!canNextPage} onClick={nextPage} sx={controlSx} aria-label="Next page">
-        <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "20px !important" }}>
-          chevron_right
-        </Icon>
+        <PlatformIcon name="chevron_right" size={18} />
       </IconButton>
     </Box>
   );

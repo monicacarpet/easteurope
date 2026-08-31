@@ -9,13 +9,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
 import LinearProgress from "@mui/material/LinearProgress";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import PlatformIcon from "components/Platform/PlatformIcon";
 import { importStockInventory } from "services/api";
 import { parseStockUploadFile, sha256File } from "services/stockUpload";
 import { number } from "lib/format";
@@ -157,7 +157,7 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
             size="small"
             sx={{ color: "#9AA5B5" }}
           >
-            <Icon baseClassName="material-icons-outlined">close</Icon>
+            <PlatformIcon name="close" size={17} />
           </IconButton>
         </MDBox>
       </DialogTitle>
@@ -177,9 +177,7 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
               variant="outlined"
               size="small"
             >
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "16px !important" }}>
-                table_view
-              </Icon>
+              <PlatformIcon name="table_view" size={16} />
               &nbsp; Excel / WPS template
             </MDButton>
             <MDButton
@@ -189,9 +187,7 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
               variant="outlined"
               size="small"
             >
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "16px !important" }}>
-                description
-              </Icon>
+              <PlatformIcon name="description" size={16} />
               &nbsp; CSV template
             </MDButton>
           </MDBox>
@@ -213,7 +209,7 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
             }}
             onClick={() => inputRef.current?.click()}
             sx={{
-              border: `2px dashed ${dragging ? "#377DFF" : "#C9D3E1"}`,
+              border: `2px dashed ${dragging ? "#0F766E" : "#CBD5E1"}`,
               backgroundColor: dragging ? "#F2F7FF" : "#FBFCFE",
               borderRadius: "14px",
               px: { xs: 2.5, md: 5 },
@@ -221,7 +217,7 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
               cursor: "pointer",
               textAlign: "center",
               transition: "all .18s ease",
-              "&:hover": { borderColor: "#377DFF", backgroundColor: "#F7FAFF" },
+              "&:hover": { borderColor: "#0F766E", backgroundColor: "#F0FDFA" },
             }}
           >
             <input
@@ -241,13 +237,11 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
                 width: 52,
                 height: 52,
                 borderRadius: "14px",
-                color: "#377DFF",
-                backgroundColor: "#EAF2FF",
+                color: "#0F766E",
+                backgroundColor: "#CCFBF1",
               }}
             >
-              <Icon baseClassName="material-icons-outlined" sx={{ fontSize: "29px !important" }}>
-                upload_file
-              </Icon>
+              <PlatformIcon name="upload_file" size={29} />
             </MDBox>
             <MDTypography
               variant="button"
@@ -268,8 +262,8 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
               }}
               sx={{
                 color: "#fff !important",
-                backgroundColor: "#377DFF !important",
-                borderRadius: "8px",
+                backgroundColor: "#0F766E !important",
+                borderRadius: "10px",
                 px: 3.2,
                 py: 1.05,
                 boxShadow: "none",
@@ -454,8 +448,8 @@ export default function StockUploadDialog({ open, onClose, currentSnapshot, onIm
           onClick={submit}
           sx={{
             color: "#fff !important",
-            backgroundColor: "#377DFF !important",
-            borderRadius: "8px",
+            backgroundColor: "#0F766E !important",
+            borderRadius: "10px",
             px: 3,
             boxShadow: "none",
             "&:hover": { backgroundColor: "#528FFF !important", boxShadow: "none" },

@@ -1,8 +1,13 @@
-import { HEADER_HEIGHT, MANTIS_BREAKPOINTS, MINI_WIDTH, OPEN_WIDTH } from "config/mantisLayout";
+import {
+  WORKSPACE_HEADER_HEIGHT,
+  WORKSPACE_MAX_WIDTH,
+  WORKSPACE_NAV_HEIGHT,
+  WORKSPACE_SHELL_HEIGHT,
+} from "config/workspaceLayout";
 
-test("uses the official Mantis drawer geometry", () => {
-  expect(OPEN_WIDTH).toBe(260);
-  expect(MINI_WIDTH).toBe(60);
-  expect(HEADER_HEIGHT).toBe(60);
-  expect(MANTIS_BREAKPOINTS).toMatchObject({ sm: 768, md: 1024, lg: 1266, xl: 1440 });
+test("uses a full-width top workspace with no sidebar offset", () => {
+  expect(WORKSPACE_HEADER_HEIGHT).toBe(68);
+  expect(WORKSPACE_NAV_HEIGHT).toBe(52);
+  expect(WORKSPACE_SHELL_HEIGHT).toBe(120);
+  expect(WORKSPACE_MAX_WIDTH).toBe(1720);
 });
