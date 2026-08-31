@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import platformTokens from "assets/theme/platformTokens";
 
 export default function SectionHeader({ title, subtitle, action }) {
   return (
@@ -10,17 +11,31 @@ export default function SectionHeader({ title, subtitle, action }) {
       alignItems={{ xs: "flex-start", md: "center" }}
       flexDirection={{ xs: "column", md: "row" }}
       gap={1.5}
-      mb={3}
+      mb={2.5}
+      minWidth={0}
     >
-      <MDBox>
-        <MDTypography variant="h4" fontWeight="medium">
+      <MDBox minWidth={0}>
+        <MDTypography
+          variant="h4"
+          sx={{
+            color: platformTokens.text.primary,
+            fontSize: 20,
+            fontWeight: 600,
+            lineHeight: 1.35,
+          }}
+        >
           {title}
         </MDTypography>
-        <MDTypography variant="button" color="text" fontWeight="regular">
-          {subtitle}
-        </MDTypography>
+        {subtitle ? (
+          <MDTypography
+            variant="body2"
+            sx={{ color: platformTokens.text.secondary, fontSize: 12.5, mt: 0.45, lineHeight: 1.5 }}
+          >
+            {subtitle}
+          </MDTypography>
+        ) : null}
       </MDBox>
-      {action ? <MDBox>{action}</MDBox> : null}
+      {action ? <MDBox sx={{ flexShrink: 0, maxWidth: "100%" }}>{action}</MDBox> : null}
     </MDBox>
   );
 }

@@ -2,63 +2,47 @@ import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import platformTokens from "assets/theme/platformTokens";
 
-const OPEN_WIDTH = 220;
-const MINI_WIDTH = 68;
-const SIDENAV_MARGIN = 0;
-const CONTENT_GAP = 10;
-const CONTENT_RIGHT_GUTTER = 20;
+const OPEN_WIDTH = 260;
+const MINI_WIDTH = 72;
 
 export default styled(Drawer)(({ theme, ownerState }) => {
   const { miniSidenav } = ownerState;
   const { transitions, breakpoints } = theme;
-  const width = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
+  const desktopWidth = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
 
   return {
-    width,
+    width: desktopWidth,
     flexShrink: 0,
 
     "& .MuiDrawer-paper": {
+      width: desktopWidth,
+      height: "100vh",
+      top: 0,
+      left: 0,
+      bottom: 0,
       boxSizing: "border-box",
       display: "flex",
       flexDirection: "column",
-      width,
-      height: "100vh !important",
-      maxHeight: "100vh",
-      margin: "0 !important",
-      top: "0 !important",
-      left: "0 !important",
-      bottom: "0 !important",
-      overflowX: "visible",
+      overflowX: "hidden",
       overflowY: "hidden",
-      background: platformTokens.sidebar.background,
+      backgroundColor: platformTokens.sidebar.background,
       color: platformTokens.sidebar.text,
-      borderTop: "0 !important",
-      borderBottom: "0 !important",
-      borderLeft: "0 !important",
-      borderRight: `1px solid ${platformTokens.sidebar.border} !important`,
-      borderRadius: "0 18px 18px 0 !important",
-      boxShadow: "8px 0 28px rgba(17, 24, 58, 0.08) !important",
+      borderRight: `1px solid ${platformTokens.sidebar.border}`,
+      borderRadius: 0,
+      boxShadow: "none",
       transition: transitions.create(["width", "transform"], {
-        easing: transitions.easing.easeInOut,
+        easing: transitions.easing.sharp,
         duration: transitions.duration.shorter,
       }),
 
       [breakpoints.down("xl")]: {
         width: OPEN_WIDTH,
-        height: "calc(100vh - 24px) !important",
-        maxHeight: "calc(100vh - 24px)",
-        top: "12px !important",
-        left: "12px !important",
-        bottom: "12px !important",
-        border: `1px solid ${platformTokens.sidebar.border} !important`,
-        borderRadius: "18px !important",
-        transform: miniSidenav ? `translateX(-${OPEN_WIDTH + 40}px)` : "translateX(0)",
-        boxShadow: miniSidenav
-          ? "none !important"
-          : "0 16px 40px rgba(17, 24, 58, 0.18) !important",
+        transform: miniSidenav ? `translateX(-${OPEN_WIDTH}px)` : "translateX(0)",
+        boxShadow: miniSidenav ? "none" : "0 8px 24px rgba(0,0,0,0.12)",
+        zIndex: 1300,
       },
     },
   };
 });
 
-export { OPEN_WIDTH, MINI_WIDTH, SIDENAV_MARGIN, CONTENT_GAP, CONTENT_RIGHT_GUTTER };
+export { OPEN_WIDTH, MINI_WIDTH };

@@ -4,15 +4,9 @@ import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 import { useMaterialUIController, setLayout } from "context";
 import platformTokens from "assets/theme/platformTokens";
-import {
-  OPEN_WIDTH,
-  MINI_WIDTH,
-  CONTENT_GAP,
-  CONTENT_RIGHT_GUTTER,
-} from "examples/Sidenav/SidenavRoot";
+import { OPEN_WIDTH, MINI_WIDTH } from "examples/Sidenav/SidenavRoot";
 
-const TOP_GUTTER = 10;
-const BOTTOM_GUTTER = 18;
+const HEADER_HEIGHT = 64;
 
 function DashboardLayout({ children }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -25,29 +19,35 @@ function DashboardLayout({ children }) {
 
   return (
     <MDBox
+      component="main"
       sx={({ breakpoints, transitions }) => {
-        const currentSidebarWidth = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
-        const desktopLeft = currentSidebarWidth + CONTENT_GAP;
-        const desktopReservedWidth = desktopLeft + CONTENT_RIGHT_GUTTER;
+        const sidebarWidth = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
 
         return {
           minHeight: "100vh",
+          minWidth: 0,
           width: "100%",
+          marginLeft: 0,
+          pt: `${HEADER_HEIGHT}px`,
+          px: { xs: 2, sm: 2.5, md: 3 },
+          pb: 2.5,
           position: "relative",
-          boxSizing: "border-box",
           overflowX: "hidden",
+          boxSizing: "border-box",
           backgroundColor: platformTokens.surface.canvas,
-          px: { xs: 1.5, sm: 2, xl: 0 },
-          pt: { xs: 1.5, sm: 2, xl: `${TOP_GUTTER}px` },
-          pb: { xs: 2, xl: `${BOTTOM_GUTTER}px` },
           transition: transitions.create(["margin-left", "width"], {
-            easing: transitions.easing.easeInOut,
-            duration: transitions.duration.standard,
+            easing: transitions.easing.sharp,
+            duration: transitions.duration.shorter,
           }),
 
+          "& > *": {
+            minWidth: 0,
+            maxWidth: "100%",
+          },
+
           [breakpoints.up("xl")]: {
-            marginLeft: `${desktopLeft}px`,
-            width: `calc(100% - ${desktopReservedWidth}px)`,
+            marginLeft: `${sidebarWidth}px`,
+            width: `calc(100% - ${sidebarWidth}px)`,
           },
         };
       }}
@@ -57,8 +57,7 @@ function DashboardLayout({ children }) {
   );
 }
 
-DashboardLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+DashboardLayout.propTypes = { children: PropTypes.node.isRequired };
 
+export { HEADER_HEIGHT };
 export default DashboardLayout;

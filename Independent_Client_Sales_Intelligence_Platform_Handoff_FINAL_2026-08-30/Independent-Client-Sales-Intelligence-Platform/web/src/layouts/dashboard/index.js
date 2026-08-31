@@ -40,20 +40,20 @@ ChartJS.register(
 );
 
 const COLORS = {
-  navy: "#26336F",
-  blue: "#5B6DF6",
-  orange: "#F59E0B",
-  coral: "#FF7C73",
-  green: "#2E9D68",
-  red: "#D84A4A",
-  purple: "#8F7AF5",
-  pale: "#C8D9FF",
-  text: "#17315F",
-  muted: "#7E8AA6",
-  border: "#E6EBF3",
-  grid: "#EEF2F7",
+  navy: "#1677FF",
+  blue: "#1677FF",
+  orange: "#FAAD14",
+  coral: "#FF4D4F",
+  green: "#52C41A",
+  red: "#FF4D4F",
+  purple: "#722ED1",
+  pale: "#91CAFF",
+  text: "#262626",
+  muted: "#8C8C8C",
+  border: "#E6EBF1",
+  grid: "#F0F0F0",
   surface: "#FFFFFF",
-  soft: "#F8FAFD",
+  soft: "#FAFAFA",
 };
 
 function OutlineIcon({ name, size = 18, color = "inherit" }) {
@@ -117,9 +117,9 @@ function Section({ children, sx = {} }) {
   return (
     <Card
       sx={{
-        borderRadius: "16px",
+        borderRadius: "8px",
         border: `1px solid ${COLORS.border}`,
-        boxShadow: "0 8px 24px rgba(25, 45, 85, 0.05)",
+        boxShadow: "none",
         overflow: "hidden",
         minWidth: 0,
         ...sx,
@@ -142,7 +142,7 @@ function Metric({ icon, label, value, detail, accent = COLORS.navy }) {
         p: 2.1,
         minHeight: 112,
         border: `1px solid ${COLORS.border}`,
-        borderRadius: "14px",
+        borderRadius: "8px",
         backgroundColor: COLORS.surface,
       }}
     >

@@ -4,16 +4,17 @@ import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import platformTokens from "assets/theme/platformTokens";
 
-const FALLBACK_COLORS = {
-  primary: "#5B6DF6",
-  secondary: "#6B7280",
-  info: "#3568D4",
-  success: "#2E9D68",
-  warning: "#D97706",
-  error: "#D84A4A",
-  light: "#7E8AA6",
-  dark: "#26336F",
+const ACCENTS = {
+  primary: "#1677FF",
+  secondary: "#8C8C8C",
+  info: "#1677FF",
+  success: "#52C41A",
+  warning: "#FAAD14",
+  error: "#FF4D4F",
+  light: "#8C8C8C",
+  dark: "#262626",
 };
 
 function renderIcon(icon) {
@@ -29,24 +30,29 @@ function renderIcon(icon) {
 }
 
 function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
-  const accent = FALLBACK_COLORS[color] || FALLBACK_COLORS.dark;
+  const accent = ACCENTS[color] || ACCENTS.dark;
 
   return (
     <Card
       sx={{
         height: "100%",
-        minHeight: 120,
-        borderRadius: "14px",
-        border: "1px solid #E6EBF3",
-        boxShadow: "0 6px 18px rgba(25, 45, 85, 0.05)",
+        minHeight: 112,
+        borderRadius: "8px",
+        border: `1px solid ${platformTokens.surface.border}`,
+        boxShadow: "none",
         overflow: "hidden",
       }}
     >
-      <MDBox px={2.15} py={1.9}>
+      <MDBox px={2.1} py={1.8}>
         <MDBox display="flex" alignItems="center" justifyContent="space-between" gap={1}>
           <MDTypography
             variant="caption"
-            sx={{ color: "#7E8AA6", fontSize: 11.5, fontWeight: 600, lineHeight: 1.2 }}
+            sx={{
+              color: platformTokens.text.secondary,
+              fontSize: 11.5,
+              fontWeight: 400,
+              lineHeight: 1.2,
+            }}
           >
             {title}
           </MDTypography>
@@ -64,18 +70,24 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
         </MDBox>
 
         <MDTypography
-          variant="h5"
-          sx={{ color: "#17315F", fontWeight: 700, mt: 1, letterSpacing: "-0.025em" }}
+          variant="h4"
+          sx={{
+            color: platformTokens.text.primary,
+            fontSize: 20,
+            fontWeight: 600,
+            mt: 1.05,
+            lineHeight: 1.25,
+          }}
         >
           {count}
         </MDTypography>
 
-        <MDBox mt={0.7} display="flex" alignItems="baseline" minWidth={0}>
+        <MDBox mt={0.75} display="flex" alignItems="baseline" minWidth={0}>
           {percentage.amount !== "" && percentage.amount != null ? (
             <MDTypography
               component="span"
               variant="caption"
-              sx={{ color: accent, fontWeight: 700, whiteSpace: "nowrap" }}
+              sx={{ color: accent, fontWeight: 500, whiteSpace: "nowrap" }}
             >
               {percentage.amount}
             </MDTypography>
@@ -83,7 +95,11 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
           <MDTypography
             component="span"
             variant="caption"
-            sx={{ color: "#7E8AA6", ml: percentage.amount ? 0.55 : 0, lineHeight: 1.35 }}
+            sx={{
+              color: platformTokens.text.tertiary,
+              ml: percentage.amount ? 0.55 : 0,
+              lineHeight: 1.35,
+            }}
           >
             {percentage.label}
           </MDTypography>
@@ -95,11 +111,7 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
 
 ComplexStatisticsCard.defaultProps = {
   color: "info",
-  percentage: {
-    color: "success",
-    text: "",
-    label: "",
-  },
+  percentage: { color: "success", text: "", label: "" },
 };
 
 ComplexStatisticsCard.propTypes = {

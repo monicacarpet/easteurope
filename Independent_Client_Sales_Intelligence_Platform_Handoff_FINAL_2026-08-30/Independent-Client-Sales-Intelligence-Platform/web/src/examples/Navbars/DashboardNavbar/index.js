@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -20,22 +20,8 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { useMaterialUIController, setMiniSidenav } from "context";
 import { useAuth } from "auth/AuthContext";
 import platformTokens from "assets/theme/platformTokens";
-import { APP_NAME } from "config/brand";
-
-const PAGE_META = {
-  "/dashboard": ["Dashboard", "Sales, stock and campaign intelligence"],
-  "/leads": ["Lead Database", "Search, qualify and assign the Platform lead portfolio"],
-  "/my-leads": ["My Leads", "Your claimed accounts and active sales work"],
-  "/follow-ups": ["Follow-ups", "Open actions, due dates and sales commitments"],
-  "/stock": ["Stock Portfolio", "Current inventory, readiness and stock pressure"],
-  "/campaigns": ["Promotion Campaigns", "Outbound stock promotion activity and reach"],
-  "/gis": ["GIS", "Geographic distribution of qualified sales opportunities"],
-  "/data-quality": ["Data Quality", "Coverage, completeness and lead readiness controls"],
-  "/activity": ["Activity", "Operational events across the Platform sales workflow"],
-  "/admin": ["Administration", "Users, access and application controls"],
-  "/reports": ["Reports", "Management-ready lead, campaign and stock reporting"],
-  "/account": ["Account", "Profile and effective application permissions"],
-};
+import { OPEN_WIDTH, MINI_WIDTH } from "examples/Sidenav/SidenavRoot";
+import { HEADER_HEIGHT } from "examples/LayoutContainers/DashboardLayout";
 
 function initials(name) {
   return String(name || "Platform")
@@ -50,21 +36,16 @@ function roleLabel(role) {
   return String(role || "user").replaceAll("_", " ");
 }
 
-export default function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
+export default function DashboardNavbar({ isMini = false }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const [openMenu, setOpenMenu] = useState(null);
   const [search, setSearch] = useState("");
-  const [searchFocused, setSearchFocused] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
   const { profile, demoMode } = useAuth();
-  const [title, subtitle] = PAGE_META[location.pathname] || [
-    APP_NAME,
-    "Internal sales intelligence",
-  ];
+  const sidebarWidth = miniSidenav ? MINI_WIDTH : OPEN_WIDTH;
 
-  const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
+  const handleSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
 
   function submitSearch(event) {
     event.preventDefault();
@@ -81,109 +62,101 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
 
   return (
     <AppBar
-      position={absolute ? "absolute" : "static"}
+      position="fixed"
       elevation={0}
       color="transparent"
-      sx={{
-        zIndex: 20,
-        mb: 0.8,
-        backgroundColor: "transparent",
-        color: "inherit",
+      sx={({ breakpoints, transitions }) => ({
+        zIndex: 1250,
+        top: 0,
+        left: 0,
+        right: 0,
+        width: "100%",
+        height: HEADER_HEIGHT,
+        backgroundColor: "rgba(255,255,255,0.98)",
+        color: platformTokens.text.primary,
+        borderBottom: `1px solid ${platformTokens.surface.border}`,
         boxShadow: "none",
-        border: 0,
-      }}
+        backdropFilter: "blur(8px)",
+        transition: transitions.create(["left", "width"], {
+          easing: transitions.easing.sharp,
+          duration: transitions.duration.shorter,
+        }),
+
+        [breakpoints.up("xl")]: {
+          left: `${sidebarWidth}px`,
+          width: `calc(100% - ${sidebarWidth}px)`,
+        },
+      })}
     >
       <Box
         sx={{
-          minHeight: 58,
-          px: 0,
+          height: HEADER_HEIGHT,
+          px: { xs: 1.5, sm: 2, md: 2.5 },
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1.5,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, gap: 1.25, flex: 1 }}>
           <IconButton
             size="small"
-            onClick={handleMiniSidenav}
+            onClick={handleSidenav}
             sx={{
-              display: { xs: "inline-flex", xl: "none" },
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
               color: platformTokens.text.secondary,
+              borderRadius: "6px",
+              "&:hover": { backgroundColor: platformTokens.surface.cardMuted },
             }}
           >
             <MenuRoundedIcon sx={{ fontSize: 19 }} />
           </IconButton>
 
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              variant="h5"
-              sx={{
-                color: platformTokens.text.primary,
-                fontWeight: 700,
-                fontSize: { xs: 19, md: 21 },
-                lineHeight: 1.15,
-                letterSpacing: "-0.025em",
-              }}
-            >
-              {title}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: platformTokens.text.secondary,
-                fontSize: 11.5,
-                mt: 0.25,
-                display: { xs: "none", sm: "block" },
-              }}
-            >
-              {subtitle}
-            </Typography>
-          </Box>
-        </Box>
-
-        {isMini ? null : (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.45 }}>
+          {isMini ? null : (
             <Box
               component="form"
               onSubmit={submitSearch}
               sx={{
-                display: { xs: "none", md: "flex" },
+                display: { xs: "none", sm: "flex" },
                 alignItems: "center",
-                width: searchFocused ? { md: 220, lg: 265 } : { md: 165, lg: 190 },
-                height: 34,
-                px: 0.55,
-                borderBottom: `1px solid ${
-                  searchFocused ? platformTokens.brand.primary : "transparent"
-                }`,
-                transition: "width 180ms ease, border-color 180ms ease",
-                backgroundColor: "transparent",
+                width: { sm: 220, md: 270 },
+                height: 36,
+                px: 1.1,
+                border: `1px solid ${platformTokens.surface.borderStrong}`,
+                borderRadius: "6px",
+                backgroundColor: "#FFFFFF",
+                transition: "border-color 140ms ease, box-shadow 140ms ease",
+                "&:focus-within": {
+                  borderColor: platformTokens.brand.primary,
+                  boxShadow: "0 0 0 2px rgba(22,119,255,.10)",
+                },
               }}
             >
               <SearchRoundedIcon
-                sx={{ fontSize: 18, color: platformTokens.text.secondary, mr: 0.55 }}
+                sx={{ fontSize: 18, color: platformTokens.text.tertiary, mr: 0.75 }}
               />
               <InputBase
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
                 placeholder="Search"
                 fullWidth
                 sx={{
-                  fontSize: 11.8,
+                  fontSize: 12.5,
                   color: platformTokens.text.primary,
                   "& input::placeholder": { color: platformTokens.text.tertiary, opacity: 1 },
                 }}
               />
             </Box>
+          )}
+        </Box>
 
+        {isMini ? null : (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.55 }}>
             {demoMode ? (
               <Typography
                 variant="caption"
-                sx={{ color: platformTokens.status.warning, fontWeight: 700, mr: 0.4 }}
+                sx={{ color: platformTokens.status.warning, fontWeight: 600, mr: 0.5 }}
               >
                 PREVIEW
               </Typography>
@@ -194,13 +167,14 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 size="small"
                 onClick={(event) => setOpenMenu(event.currentTarget)}
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: 34,
+                  height: 34,
                   color: platformTokens.text.secondary,
+                  borderRadius: "6px",
                   "&:hover": { backgroundColor: platformTokens.surface.cardMuted },
                 }}
               >
-                <NotificationsNoneOutlinedIcon sx={{ fontSize: 18.5 }} />
+                <NotificationsNoneOutlinedIcon sx={{ fontSize: 19 }} />
               </IconButton>
             </Tooltip>
 
@@ -210,23 +184,23 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 0.7,
-                minHeight: 34,
-                pl: 0.3,
-                pr: 0.25,
-                borderRadius: "9px",
+                gap: 0.8,
+                minHeight: 38,
+                pl: 0.45,
+                pr: 0.7,
+                borderRadius: "6px",
                 textDecoration: "none",
                 "&:hover": { backgroundColor: platformTokens.surface.cardMuted },
               }}
             >
               <Avatar
                 sx={{
-                  width: 29,
-                  height: 29,
-                  bgcolor: platformTokens.brand.primary,
-                  color: "white",
-                  fontSize: 9.5,
-                  fontWeight: 700,
+                  width: 30,
+                  height: 30,
+                  bgcolor: platformTokens.brand.primarySoft,
+                  color: platformTokens.brand.primary,
+                  fontSize: 10,
+                  fontWeight: 600,
                 }}
               >
                 {initials(profile?.full_name)}
@@ -236,9 +210,9 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 <Typography
                   sx={{
                     color: platformTokens.text.primary,
-                    fontSize: 11,
-                    fontWeight: 600,
-                    lineHeight: 1.1,
+                    fontSize: 11.5,
+                    fontWeight: 500,
+                    lineHeight: 1.15,
                   }}
                 >
                   {profile?.full_name || "Platform User"}
@@ -246,8 +220,8 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 <Typography
                   sx={{
                     color: platformTokens.text.tertiary,
-                    fontSize: 9.1,
-                    mt: 0.25,
+                    fontSize: 9.5,
+                    mt: 0.2,
                     textTransform: "capitalize",
                   }}
                 >
@@ -258,7 +232,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
               <KeyboardArrowDownRoundedIcon
                 sx={{
                   display: { xs: "none", lg: "block" },
-                  fontSize: 15,
+                  fontSize: 16,
                   color: platformTokens.text.tertiary,
                 }}
               />
@@ -271,7 +245,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
               PaperProps={{
                 sx: {
                   mt: 1,
-                  width: 340,
+                  width: 330,
                   maxWidth: "calc(100vw - 24px)",
                   border: `1px solid ${platformTokens.surface.border}`,
                   boxShadow: platformTokens.shadow.menu,
@@ -290,7 +264,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 <Inventory2OutlinedIcon
                   sx={{ fontSize: 18, color: platformTokens.text.secondary }}
                 />
-                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45, overflowWrap: "anywhere" }}>
+                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45 }}>
                   Review stock pressure and promotion coverage
                 </Typography>
               </MenuItem>
@@ -302,7 +276,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 sx={{ py: 1.15, gap: 1.15, alignItems: "flex-start", whiteSpace: "normal" }}
               >
                 <CampaignOutlinedIcon sx={{ fontSize: 18, color: platformTokens.text.secondary }} />
-                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45, overflowWrap: "anywhere" }}>
+                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45 }}>
                   Check countries reached by stock emails
                 </Typography>
               </MenuItem>
@@ -316,7 +290,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
                 <EventNoteOutlinedIcon
                   sx={{ fontSize: 18, color: platformTokens.text.secondary }}
                 />
-                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45, overflowWrap: "anywhere" }}>
+                <Typography sx={{ fontSize: 12.3, lineHeight: 1.45 }}>
                   Complete overdue sales follow-ups
                 </Typography>
               </MenuItem>
@@ -328,12 +302,7 @@ export default function DashboardNavbar({ absolute = false, light = false, isMin
   );
 }
 
-DashboardNavbar.defaultProps = {
-  absolute: false,
-  light: false,
-  isMini: false,
-};
-
+DashboardNavbar.defaultProps = { absolute: false, light: false, isMini: false };
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
