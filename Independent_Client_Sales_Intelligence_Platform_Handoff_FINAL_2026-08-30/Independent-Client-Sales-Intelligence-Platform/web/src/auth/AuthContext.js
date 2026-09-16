@@ -122,10 +122,7 @@ export function AuthProvider({ children }) {
       // TOKEN_REFRESHED when it renews the JWT. These are not new logins.
       // Updating the session silently keeps protected routes mounted, so open
       // dialogs, table state and page state are preserved across tab switches.
-      if (
-        sameAuthenticatedUser &&
-        (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")
-      ) {
+      if (sameAuthenticatedUser && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
         sessionRef.current = nextSession;
         setSession(nextSession);
         setLoading(false);
