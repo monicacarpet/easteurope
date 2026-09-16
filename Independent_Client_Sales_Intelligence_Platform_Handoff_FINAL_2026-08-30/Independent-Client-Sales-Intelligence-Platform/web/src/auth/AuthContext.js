@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { demoMode, supabase } from "lib/supabase";
 
@@ -37,6 +37,16 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(demoMode ? { user: { id: DEMO_PROFILE.id } } : null);
   const [profile, setProfile] = useState(demoMode ? DEMO_PROFILE : null);
   const [loading, setLoading] = useState(!demoMode);
+  const sessionRef = useRef(session);
+  const profileRef = useRef(profile);
+
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
+  useEffect(() => {
+    profileRef.current = profile;
+  }, [profile]);
 
   useEffect(() => {
     if (demoMode || !supabase) return undefined;
@@ -46,6 +56,8 @@ export function AuthProvider({ children }) {
     async function hydrateSession(nextSession) {
       if (!nextSession?.user) {
         if (mounted) {
+          sessionRef.current = null;
+          profileRef.current = null;
           setSession(null);
           setProfile(null);
           setLoading(false);
@@ -56,6 +68,8 @@ export function AuthProvider({ children }) {
       const nextProfile = await fetchApplicationProfile(nextSession.user.id);
 
       if (mounted) {
+        sessionRef.current = nextSession;
+        profileRef.current = nextProfile;
         setSession(nextSession);
         setProfile(nextProfile);
         setLoading(false);
@@ -81,17 +95,46 @@ export function AuthProvider({ children }) {
       });
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!mounted) return;
 
+      // getSession() above owns initial hydration. Ignoring INITIAL_SESSION here
+      // prevents a duplicate profile fetch and an unnecessary loading transition.
+      if (event === "INITIAL_SESSION") return;
+
       if (!nextSession?.user) {
+        sessionRef.current = null;
+        profileRef.current = null;
         setSession(null);
         setProfile(null);
         setLoading(false);
         return;
       }
 
-      setLoading(true);
+      const currentUserId = sessionRef.current?.user?.id;
+      const currentProfile = profileRef.current;
+      const sameAuthenticatedUser =
+        currentUserId === nextSession.user.id &&
+        currentProfile?.id === nextSession.user.id &&
+        currentProfile?.active;
+
+      // Supabase can emit SIGNED_IN again when a browser tab regains focus and
+      // TOKEN_REFRESHED when it renews the JWT. These are not new logins.
+      // Updating the session silently keeps protected routes mounted, so open
+      // dialogs, table state and page state are preserved across tab switches.
+      if (
+        sameAuthenticatedUser &&
+        (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")
+      ) {
+        sessionRef.current = nextSession;
+        setSession(nextSession);
+        setLoading(false);
+        return;
+      }
+
+      // Only block the whole application when there is no usable profile yet.
+      // Profile/user updates for the same signed-in user are refreshed silently.
+      if (!sameAuthenticatedUser) setLoading(true);
 
       // Important: do not call other Supabase methods synchronously inside
       // onAuthStateChange. Deferring the profile lookup prevents the auth-lock
@@ -99,6 +142,8 @@ export function AuthProvider({ children }) {
       window.setTimeout(() => {
         hydrateSession(nextSession).catch(() => {
           if (mounted) {
+            sessionRef.current = null;
+            profileRef.current = null;
             setSession(null);
             setProfile(null);
             setLoading(false);
@@ -128,7 +173,10 @@ export function AuthProvider({ children }) {
       canManageUsers: ADMIN_ROLES.has(role),
       async signIn(email, password) {
         if (demoMode) {
-          setSession({ user: { id: DEMO_PROFILE.id } });
+          const demoSession = { user: { id: DEMO_PROFILE.id } };
+          sessionRef.current = demoSession;
+          profileRef.current = DEMO_PROFILE;
+          setSession(demoSession);
           setProfile(DEMO_PROFILE);
           return;
         }
@@ -139,6 +187,8 @@ export function AuthProvider({ children }) {
 
         try {
           const nextProfile = await fetchApplicationProfile(data.session.user.id);
+          sessionRef.current = data.session;
+          profileRef.current = nextProfile;
           setSession(data.session);
           setProfile(nextProfile);
           setLoading(false);
