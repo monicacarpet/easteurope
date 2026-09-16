@@ -6,14 +6,18 @@ import MDBox from "components/MDBox";
 import { useMaterialUIController, setLayout } from "context";
 import platformTokens from "assets/theme/platformTokens";
 import { WORKSPACE_MAX_WIDTH, WORKSPACE_SHELL_HEIGHT } from "config/workspaceLayout";
+import { useWorkspaceShell } from "context/WorkspaceShellContext";
 
 function DashboardLayout({ children }) {
   const [, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
+  const insidePersistentShell = useWorkspaceShell();
 
   useEffect(() => {
     setLayout(dispatch, "dashboard");
   }, [dispatch, pathname]);
+
+  if (insidePersistentShell) return children;
 
   return (
     <MDBox

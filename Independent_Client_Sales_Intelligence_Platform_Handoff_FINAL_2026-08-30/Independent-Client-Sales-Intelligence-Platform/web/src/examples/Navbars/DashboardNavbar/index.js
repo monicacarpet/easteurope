@@ -34,6 +34,7 @@ import {
   WORKSPACE_NAV_HEIGHT,
 } from "config/workspaceLayout";
 import routes from "routes";
+import { useWorkspaceShell } from "context/WorkspaceShellContext";
 
 export const NAV_GROUPS = [
   { key: "overview", label: "Overview", icon: HomeOutlined, routeKeys: ["dashboard"] },
@@ -86,6 +87,7 @@ export default function DashboardNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { profile, demoMode, signOut } = useAuth();
+  const insidePersistentShell = useWorkspaceShell();
   const [search, setSearch] = useState("");
   const [navAnchor, setNavAnchor] = useState(null);
   const [navGroupKey, setNavGroupKey] = useState(null);
@@ -115,6 +117,8 @@ export default function DashboardNavbar() {
   );
 
   const openGroup = groupedNavigation.find((group) => group.key === navGroupKey);
+
+  if (insidePersistentShell) return null;
 
   function submitSearch(event) {
     event.preventDefault();

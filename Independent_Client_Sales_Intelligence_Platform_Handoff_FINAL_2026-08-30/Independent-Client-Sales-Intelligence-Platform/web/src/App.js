@@ -9,6 +9,10 @@ import { useMaterialUIController } from "context";
 import { useAuth } from "auth/AuthContext";
 import ProtectedRoute from "auth/ProtectedRoute";
 import LanguageSwitcher from "components/Platform/LanguageSwitcher";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Footer from "examples/Footer";
+import { WorkspaceShellProvider } from "context/WorkspaceShellContext";
 
 export default function App() {
   const [controller] = useMaterialUIController();
@@ -44,25 +48,39 @@ export default function App() {
       return <Route path={route.route} element={element} key={route.key} />;
     });
 
+  const isPublicPath = routes.some((route) => route.public && route.route === pathname);
+
+  const routeContent = (
+    <Routes>
+      {getRoutes(routes)}
+      <Route
+        path="/"
+        element={
+          <Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} replace />
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} replace />
+        }
+      />
+    </Routes>
+  );
+
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {!isAuthenticated ? <LanguageSwitcher /> : null}
-      <Routes>
-        {getRoutes(routes)}
-        <Route
-          path="/"
-          element={
-            <Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} replace />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/dashboard" : "/authentication/sign-in"} replace />
-          }
-        />
-      </Routes>
+      {isAuthenticated && !isPublicPath ? (
+        <DashboardLayout>
+          <DashboardNavbar />
+          <WorkspaceShellProvider>{routeContent}</WorkspaceShellProvider>
+          <Footer />
+        </DashboardLayout>
+      ) : (
+        routeContent
+      )}
     </ThemeProvider>
   );
 }

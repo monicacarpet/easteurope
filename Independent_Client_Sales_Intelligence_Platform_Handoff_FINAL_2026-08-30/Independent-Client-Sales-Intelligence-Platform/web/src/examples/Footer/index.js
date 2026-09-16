@@ -2,8 +2,13 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { COMPANY_NAME } from "config/brand";
 import platformTokens from "assets/theme/platformTokens";
+import { useWorkspaceShell } from "context/WorkspaceShellContext";
 
 export default function Footer() {
+  const insidePersistentShell = useWorkspaceShell();
+
+  if (insidePersistentShell) return null;
+
   return (
     <MDBox
       width="100%"
