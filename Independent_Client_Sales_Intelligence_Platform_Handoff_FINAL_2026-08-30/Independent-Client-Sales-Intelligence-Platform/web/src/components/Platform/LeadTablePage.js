@@ -25,7 +25,9 @@ import { claimLead, getLeads, releaseLead } from "services/api";
 import { dateTime, downloadCsv, number, safeUrl } from "lib/format";
 
 function normalizeEmailMeta(value) {
-  return String(value ?? "").trim().toLowerCase();
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
 }
 
 function getEmailQuality(lead) {
@@ -56,9 +58,16 @@ function getEmailQuality(lead) {
   if (confidence === "low") return { label: "Low confidence", color: "warning", verified: false };
 
   const numericConfidence = Number(confidence);
-  if (Number.isFinite(numericConfidence) && confidence !== "" && numericConfidence >= 0 && numericConfidence <= 1) {
-    if (numericConfidence >= 0.8) return { label: "High confidence", color: "success", verified: false };
-    if (numericConfidence >= 0.5) return { label: "Medium confidence", color: "info", verified: false };
+  if (
+    Number.isFinite(numericConfidence) &&
+    confidence !== "" &&
+    numericConfidence >= 0 &&
+    numericConfidence <= 1
+  ) {
+    if (numericConfidence >= 0.8)
+      return { label: "High confidence", color: "success", verified: false };
+    if (numericConfidence >= 0.5)
+      return { label: "Medium confidence", color: "info", verified: false };
     return { label: "Low confidence", color: "warning", verified: false };
   }
 
