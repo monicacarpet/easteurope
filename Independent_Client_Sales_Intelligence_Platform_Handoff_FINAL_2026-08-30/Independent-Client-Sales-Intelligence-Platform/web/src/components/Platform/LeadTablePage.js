@@ -24,6 +24,47 @@ import useSessionState from "hooks/useSessionState";
 import { claimLead, getLeads, releaseLead } from "services/api";
 import { dateTime, downloadCsv, number, safeUrl } from "lib/format";
 
+function normalizeEmailMeta(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+function getEmailQuality(lead) {
+  const email = String(lead?.email || "").trim();
+  if (!email) return { label: "missing", color: "warning", verified: false };
+
+  const status = normalizeEmailMeta(lead?.email_status);
+  const verification = normalizeEmailMeta(lead?.email_verification_status);
+  const confidence = normalizeEmailMeta(lead?.email_confidence);
+
+  const invalidMarkers = ["invalid", "bounced", "hard_bounce_no_mx", "mailbox_rejected"];
+  const isInvalid = invalidMarkers.some((marker) => status === marker || verification === marker);
+  if (isInvalid) return { label: "invalid", color: "error", verified: false };
+
+  const isVerified =
+    lead?.email_verified === true ||
+    status === "verified" ||
+    verification === "valid" ||
+    verification === "verified" ||
+    verification.startsWith("leadcontact_verified") ||
+    verification.startsWith("apollo_verified");
+  if (isVerified) return { label: "verified", color: "success", verified: true };
+
+  if (confidence === "high") return { label: "High confidence", color: "success", verified: false };
+  if (confidence === "medium" || confidence === "medium_high") {
+    return { label: "Medium confidence", color: "info", verified: false };
+  }
+  if (confidence === "low") return { label: "Low confidence", color: "warning", verified: false };
+
+  const numericConfidence = Number(confidence);
+  if (Number.isFinite(numericConfidence) && confidence !== "" && numericConfidence >= 0 && numericConfidence <= 1) {
+    if (numericConfidence >= 0.8) return { label: "High confidence", color: "success", verified: false };
+    if (numericConfidence >= 0.5) return { label: "Medium confidence", color: "info", verified: false };
+    return { label: "Low confidence", color: "warning", verified: false };
+  }
+
+  return { label: "Not checked", color: "info", verified: false };
+}
+
 export default function LeadTablePage({ mine }) {
   const stateKey = mine ? "platform-my-leads" : "platform-lead-database";
   const leadCacheKey = mine ? "platform-leads:mine" : "platform-leads:available";
@@ -44,16 +85,9 @@ export default function LeadTablePage({ mine }) {
     return rows.filter((row) => {
       if (country !== "all" && row.country !== country) return false;
       if (!restrictedPool && emailFilter === "email" && !row.email) return false;
-      if (
-        !restrictedPool &&
-        emailFilter === "verified" &&
-        !(
-          row.email_verified ||
-          row.email_verification_status === "valid" ||
-          row.email_confidence === "high"
-        )
-      )
+      if (!restrictedPool && emailFilter === "verified" && !getEmailQuality(row).verified) {
         return false;
+      }
       const searchable = restrictedPool
         ? [row.name, row.country]
         : [
@@ -175,14 +209,8 @@ export default function LeadTablePage({ mine }) {
         email: (
           <MDBox lineHeight={1} textAlign="center">
             <MDBadge
-              badgeContent={
-                lead.email
-                  ? lead.email_verified || lead.email_confidence === "high"
-                    ? "verified"
-                    : "available"
-                  : "missing"
-              }
-              color={lead.email ? "success" : "warning"}
+              badgeContent={getEmailQuality(lead).label}
+              color={getEmailQuality(lead).color}
               variant="gradient"
               size="sm"
             />
@@ -431,7 +459,7 @@ export default function LeadTablePage({ mine }) {
                     >
                       <MenuItem value="all">All email states</MenuItem>
                       <MenuItem value="email">Has email</MenuItem>
-                      <MenuItem value="verified">Verified/high confidence</MenuItem>
+                      <MenuItem value="verified">Verified email</MenuItem>
                     </Select>
                   ) : null}
                 </MDBox>

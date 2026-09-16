@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // returning to a workspace does not flash a loading state or discard already-loaded data.
 const dataCache = new Map();
 const inFlight = new Map();
+const DEFAULT_STALE_TIME_MS = 5 * 60 * 1000;
 
 function serializeDependencies(dependencies) {
   try {
@@ -30,9 +31,15 @@ export default function useAsyncData(loader, dependencies = [], options = {}) {
   loaderRef.current = loader;
 
   const dependencyKey = serializeDependencies(dependencies);
+  const optionCacheKey = options.cacheKey;
+  const staleTimeMs = Number.isFinite(Number(options.staleTimeMs))
+    ? Math.max(0, Number(options.staleTimeMs))
+    : DEFAULT_STALE_TIME_MS;
+  const revalidateOnMount = options.revalidateOnMount !== false;
+
   const cacheKey = useMemo(
-    () => options.cacheKey || `${loaderIdentity(loader)}::${dependencyKey}`,
-    [dependencyKey, loader, options.cacheKey]
+    () => optionCacheKey || `${loaderIdentity(loader)}::${dependencyKey}`,
+    [dependencyKey, loader, optionCacheKey]
   );
 
   const initialCached = dataCache.get(cacheKey);
@@ -87,16 +94,26 @@ export default function useAsyncData(loader, dependencies = [], options = {}) {
 
   useEffect(() => {
     const cached = dataCache.get(cacheKey);
-    if (cached) {
-      setDataState(cached.data);
-      setError(cached.error ?? null);
-      setLoading(false);
-      // Silent stale-while-revalidate: data stays visible while the latest copy is fetched.
-      refresh({ showLoading: false }).catch(() => undefined);
-    } else {
+
+    if (!cached) {
       refresh({ showLoading: true }).catch(() => undefined);
+      return;
     }
-  }, [cacheKey, refresh]);
+
+    setDataState(cached.data);
+    setError(cached.error ?? null);
+    setLoading(false);
+
+    const ageMs = Math.max(0, Date.now() - Number(cached.updatedAt || 0));
+    const isFresh = ageMs < staleTimeMs;
+
+    // Route changes unmount/remount pages. Reuse fresh cached data without
+    // making another Supabase request, so tab switches feel instant. Once the
+    // cache is stale, keep the old data visible and refresh in the background.
+    if (revalidateOnMount && !isFresh) {
+      refresh({ showLoading: false }).catch(() => undefined);
+    }
+  }, [cacheKey, refresh, revalidateOnMount, staleTimeMs]);
 
   return { data, loading, error, refresh, setData };
 }
